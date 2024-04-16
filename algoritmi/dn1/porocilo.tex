@@ -1,0 +1,139 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{float}
+\usepackage[slovene]{babel}
+
+\author{Lucija Fekonja}
+\title{Domača naloga 1, Algoritmi}
+
+
+\begin{document}
+\selectlanguage{slovene}
+    \maketitle
+
+    \section*{Naloga 1: Turingov stroj}
+    Turingov stroj je definiran s sedmerko $(\Sigma, \Gamma, q, F, \delta, B, Q)$. V našem primeru je
+    \begin{itemize}
+        \item $\Sigma = \{0, 1 \}$ je množica znakov, ki se lahko pojavijo na vhodnem traku,
+        \item $\Gamma = \{0, 1, \_ \}$ je abeceda,
+        \item $q = q0$ je začetno stanje
+        \item $F = \{ sprejmi \}$ je množica končnih stanj, ki jih sprejme,
+        \item $\delta$ funkcija je definirana v \path{turing_machine.txt} datoteki,
+        \item $B = \_ $ je simbol, ki označuje prazen prostor na traku,
+        \item $Q = $ \{ q0, samo0, preveri, preveriB, konecPreverjanja, zacetek, desnoX, desno1, desno0, vpisi, nazaj, vpisi0, nazaj0, naZacetek, brisi, spremeniVEna, sprejmi \} je množica stanj.
+    \end{itemize}
+
+
+    \section*{Naloga 2: Prevedba}
+    Najprej dokažimo, da je $4$-SAT NP-poln, pri čemer izhajamo iz že znane ugotovitve, da je $3$-SAT NP-poln. To bomo izvedli v dveh korakih: najprej pokažemo, da je $4$-SAT NP problem, nato pa še, da je NP-težek.
+
+    Nedeterministično polinomski (NP) odločitveni problem je tisti, pri katerem lahko v polinomskem času preverimo rešitev, vendar je ne moremo najti v polinomskem času. Za problem $4$-SAT je enostavno preveriti, ali dana konjunktivna normalna oblika (CNF) vrne TRUE. To lahko storimo tako, da za vsak člen konjunkcije preverimo, ali se vrednost izraza evalvira v TRUE. Tako preverjanje deluje v polinomskem času, kar kaže, da je $4$-SAT NP problem.
+
+    Dokažimo, da je $4$-SAT NP-težek. Vemo, da je $3$-SAT NP-težek. V problemu $3$-SAT imamo konjunkcijo disjunkcij treh členov. Vsak člen konjunkcije je oblike $(a \vee b \vee c)$, kjer so $a, b$ in $c$ logične spremenljivke. Lahko pa to obliko tudi razpišemo na naslednji način:
+    \[ (a \vee b \vee c) = (a \vee b \vee c \vee d) \wedge (a \vee b \vee c \vee \neg d) \text{.} \]
+    Preverimo, da sta leva in desna stran enaki.
+
+    \begin{itemize}
+        \item Če je leva stran TRUE, mora biti vsaj ena od spremenljivk $a, b$ ali $c$ TRUE. To pomeni, da se tudi oba člena konjunkcije na desni evalvirata v TRUE. 
+        \item Če je leva stran FALSE, so vse tri spremenljivke $a, b$ in $c$ FALSE. Da bi bila desna stran TRUE, bi morala biti tako $d$ kot tudi $\neg d$ TRUE, kar ni mogoče.
+        \item Če je desna stran FALSE, so vse tri spremenljivke $a, b$ in $c$ FALSE, zato je tudi leva stran FALSE.
+        \item Če je desna stran TRUE, mora biti vsaj ena od $a, b$ oziroma $c$ TRUE. Če bi bile vse tri spremenljivke FALSE, bi bil en od členov $(a \vee b \vee c \vee d)$ oziroma $(a \vee b \vee c \vee \neg d)$ FALSE, saj ne more hkrati veljati $d$ in $\neg d$.
+    \end{itemize}
+    Opazimo, da smo $3$-SAT pretvorili v $4$-SAT. Pretvorba ima polinomsko časovno zahtevnost, zato je tudi $4$-SAT NP-težek problem.
+    
+    Na enak način lahko dokažemo, da je $5$-SAT NP-poln. V $5$-SAT imamo konjunkcijo disjunkcij petih členov. Za nedeterministično izbran vhod $\vec{x}$ lahko v polinomskem času preverimo, ali konjunktivna normalna oblika (CNF) vrne TRUE, zato je $5$-SAT NP problem.
+    Nato prevedemo $4$-SAT v $5$-SAT. Vsak člen v $4$-SAT lahko razčlenimo na podoben način kot prej:
+    \[ (a \vee b \vee c \vee d) = (a \vee b \vee c \vee d \vee e) \wedge (a \vee b \vee c \vee d \vee \neg e) \text{.} \]
+    Kot prej preverimo, da leva in desna stran vedno vrneta isto vrednost:
+    \begin{itemize}
+        \item Če je leva stran TRUE, mora biti vsaj ena od spremenljivk $a, b$, $c$ ali $d$ TRUE. To pomeni, da se tudi oba člena konjunkcije na desni evalvirata v TRUE. 
+        \item Če je leva stran FALSE, so vse štiri spremenljivke $a, b$, $c$ in $d$ FALSE. Da bi bila desna stran TRUE, bi morala biti tako $e$ kot tudi $\neg e$ TRUE, kar ni mogoče.
+        \item Če je desna stran FALSE, so vse štiri spremenljivke $a, b$, $c$ in $d$ FALSE, zato je tudi leva stran FALSE.
+        \item Če je desna stran TRUE, mora biti vsaj ena od $a, b$, $c$ ali $d$ TRUE. Če bi bile vse štiri spremenljivke FALSE, bi bil en od členov $(a \vee b \vee c \vee d \vee e)$ oziroma $(a \vee b \vee c \vee d \vee \neg e)$ FALSE, saj ne more hkrati veljati $e$ in $\neg e$.
+    \end{itemize}
+    
+    Poleg tega transformacija iz $4$-SAT v $5$-SAT zahteva polinomski čas. Tako je $5$-SAT NP in NP-težek, kar pomeni, da ga lahko štejemo kot NP-poln problem.
+    % Za $4$-SAT ne obstaja algoritem, ki bi naštel rešitev v polinomskem času, zato ga štejemo kot NP problem in ne P.
+
+
+    \section*{Naloga 3: Rodovne funkcije}
+    \subsection*{Rodovna funkcija za izbiro avta}
+
+    Rodovna funkcija za vsak del avta:
+    \begin{itemize}
+        \item \textit{Motor:} $A(x) = 4x \cdot 2x = 8x^2$, kjer $4x$ predstavlja $4$ vrste motorja, $2x$ pa dve vrsti pogona. 
+        Ker moramo izbrati vrsto motorja kot tudi vrsto pogona, faktorja $4x$ in $2x$ med sabo pomnožimo.
+        \item \textit{Zunanjost:} $B(x) = 6x$, saj lahko izberemo $6$ različnih barv.
+        \item \textit{Notranjost:} $C(x) = 2x + 2x^2$, kjer člen $2x = x + x$ predstavlja izbiro ustnjenih sedežev ali športnih.
+        Člen $2x^2 = x^2 + x^2$ pa, da smo izbrali obojne ustnjene in športne sedeže. Izbiri sta dve, saj lahko izberemo sprednje
+        sedeže športne in zadnje ustnjene ali pa obratno.
+        \item \textit{Dodatna oprema:} $D(x) = 1 + 3x + \binom{3}{2} x^2 + x^3 = 1 + 3x + 3 x^2 + x^3 $, saj lahko ne izberemo nobene dodatne opreme, odtod člen $1$,
+        lahko izberemo eno od treh možnosti dodatne opreme, odtod člen $3x$, lahko izberemo dve možnosti, dobimo člen $3x^2$,
+        ali pa izberemo vse tri dodatke, dobimo člen $x^3$.
+    \end{itemize}
+
+    \noindent
+    Rodovna funkcija, ki nam našteje vse možne kombinacije, je produkt zgornjih, saj izbiramo motor,
+    zunanjost, notranjos in dodatno opremo. Dobimo
+    \begin{align*}
+        f(x) &= A(x) \cdot B(x) \cdot C(x) \cdot D(x) \\
+        &= 8 x^2 \cdot 6x \cdot (2x + 2x^2) \cdot (1 + 3x + 3x^2 + x^3) \\
+        &= 96 x^4 + 96 x^5 + 288 x^5 + 288 x^6 + 288 x^6 + 288 x^7 + 96 x^7 + 96 x^8 \\
+        &= 96 x^4 + 384 x^5 + 576 x^6 + 384 x^7 + 96 x^8
+    \end{align*}
+
+    \subsection*{Fibonaccijeva števila drugega reda}
+
+    $n$-to Fibonaccijevo število drugega reda je definirano kot
+    $$ \mathfrak{F}_n = 
+    \begin{cases}
+        0, & n = 0 \\
+        1, & n = 1 \\
+        \mathfrak{F}_{n-1} + \mathfrak{F}_{n-2} + F_n, & n > 1
+    \end{cases}
+    \text{.} $$
+    Rodovna funkcija zanje je $\mathfrak{G} (x) = \sum_{n=0}^{\infty} \mathfrak{F}_n x^n $.
+    Izrazimo $\mathfrak{G} (x), x \mathfrak{G} (x)$ in $x^2 \mathfrak{G} (x)$ s koeficienti Fibonaccijevih 
+    števil in Fibonaccijevih števil druge vrste:
+    \begin{align*}
+        \mathfrak{G} (x) &= \mathfrak{F}_0 + \mathfrak{F}_1 x + \mathfrak{F}_2 x^2 + \cdots + \mathfrak{F}_k x^k + \cdots \\
+        &= \mathfrak{F}_0 + \mathfrak{F}_1 x + (\mathfrak{F}_1 + \mathfrak{F}_0 + F_2) x^2 + \cdots + (\mathfrak{F}_{k-1} + \mathfrak{F}_{k-2} + F_k) x^k \\
+        x \mathfrak{G} (x) &= \mathfrak{F}_0 x + \mathfrak{F}_1 x^2 + \mathfrak{F}_2 x^3 + \cdots + \mathfrak{F}_{k-1} x^k + \cdots \\
+        &= \mathfrak{F}_0 x + \mathfrak{F}_1 x^2 + (\mathfrak{F}_1 + \mathfrak{F}_0 + F_2) x^3 + \cdots + (\mathfrak{F}_{k-2} + \mathfrak{F}_{k-3} + F_{k-1}) x^k \\
+        x \mathfrak{G} (x) &= \mathfrak{F}_0 x^2 + \mathfrak{F}_1 x^3 + \mathfrak{F}_2 x^4 + \cdots + \mathfrak{F}_{k-2} x^k + \cdots \\
+        &= \mathfrak{F}_0 x^2 + \mathfrak{F}_1 x^3 + (\mathfrak{F}_1 + \mathfrak{F}_0 + F_2) x^4 + \cdots + (\mathfrak{F}_{k-3} + \mathfrak{F}_{k-4} + F_{k-2}) x^k \\
+    \end{align*}
+    Vstavimo v naslednji izraz in ga poenostavimo:
+    \begin{align*}
+        (1 - x - x^2) \mathfrak{G} (x) &= \mathfrak{F}_0 + (\mathfrak{F}_1 - \mathfrak{F}_0) x + (\mathfrak{F}_1 + \mathfrak{F}_0 + F_2 -\mathfrak{F}_1 - \mathfrak{F}_0) x^2 + \\
+        &\quad + (\mathfrak{F}_2 + \mathfrak{F}_1 + F_3 - \mathfrak{F}_1 - \mathfrak{F}_0 - F_2 - \mathfrak{F}_1) x^3 + \\
+        &\quad + (\mathfrak{F}_3 + \mathfrak{F}_2 + F_4 - \mathfrak{F}_2 - \mathfrak{F}_1 - F_3 - \mathfrak{F}_1 - \mathfrak{F}_0 - F_2) x^4 + \cdots + \\
+        &\quad + (\mathfrak{F}_{k-1} + \mathfrak{F}_{k-2} + F_k - \mathfrak{F}_{k-2} - \mathfrak{F}_{k-3} - F_{k-1} - \mathfrak{F}_{k-3} - \mathfrak{F}_{k-4} - F_{k-2}) x^k
+    \end{align*}
+    Sedaj uporabimo definicijo Fibonaccijevih števil drugega reda. Natančneje, uporabimo 
+    \begin{align*}
+        \mathfrak{F}_0 &= 0, \\
+        \mathfrak{F}_1 &= 1, \\
+        \mathfrak{F}_1 - \mathfrak{F}_{n-1} - \mathfrak{F}_{n-2} - F_n &= 0.
+    \end{align*}
+    Dobimo
+    \begin{align*}
+        (1 - x - x^2) \mathfrak{G} (x) &= \mathfrak{F}_0 + (\mathfrak{F}_1 - \mathfrak{F}_0) x + \sum_{k=2}^{\infty} F_k x^k \\
+        &= x + \sum_{k=2}^{\infty} F_k x^k \\
+        &= x + \sum_{k=0}^{\infty} F_k x^k - F_0 - F_1 x \\
+        &= x + \sum_{k=0}^{\infty} F_k x^k - x \\
+        &= \sum_{k=0}^{\infty} F_k x^k
+    \end{align*}
+    Označimo s $F(x) = \sum_{k=0}^{\infty} F_k x^k$ rodovno funkcijo za Fibonaccijeva števila. Potem je 
+    $$  \mathfrak{G} (x) = \frac{1}{1 - x - x^2} F(x) \text{.}$$
+    Rodovno funkcijo Fibonaccijevih števil lahko zapišemo tudi s $F(x) = \frac{x}{1 - x - x^2}$, zato 
+    imamo posplošitev 
+    $$  \mathfrak{G} (x) = \frac{1}{x} F(x)^2 \text{.}$$
+    Vemo, da je koeficient vrste $F(x)^2$ pri členu z $x^k$ enak $\frac{(n-1) F_n + 2n F_{n-1}}{5}$,
+    torej je koeficient vrste $\frac{1}{x} F(x)^2$ pri členu z $x^k$ enak $$ \mathfrak{F}_n = \frac{n F_{n+1} + 2 (n+1) F_n}{5} \text{.}$$
+
+
+\end{document}

@@ -1,0 +1,17 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[slovene]{babel}
+
+\newtheorem{definicija}{Definicija}
+
+\title{Parametrizirana kompleksnost koordiniranega načrtovanja gibanja}
+
+\begin{document}
+\noindent
+Članek predstavi problem CMP, v katerem je podanih $k$ robotov skupaj z njihovimi začetnimi in končnimi točkami. Roboti se lahko na vsakem časovnem koraku premaknejo ali ostanejo na mestu. Cilj je najti urnik premikanja robotov, ki optimizira ali število časovnih korakov ali skupno pot robotov.
+Če ta dva optimizacijska problema parametriziramo s številom robotov, ugotovimo, da sta rešljiva v času FPT.
+Če problem CMP parametriziramo s skupno dolžino poti robotov, ponovno dobimo FPT problem.
+Če pa ga parametriziramo s številom časovnih korakov, pa ugotovimo, da je NP-težek. 
+\end{document}

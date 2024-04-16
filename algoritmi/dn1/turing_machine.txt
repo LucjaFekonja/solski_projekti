@@ -1,0 +1,120 @@
+// Vhod: Število v eniškem zapisu n
+// Izhod: Vsota prvih n števil v eniškem zapisu
+// Primer: Za n = 1110 vrne 11111111110
+//
+// Vsota prvih n števil
+// za Turing Machine Simulator 
+// turingmachinesimulator.com
+
+name: Vsota prvih n števil
+init: q0
+accept: qAccept
+
+// Če je prvo število 0 in potem blank, sprejmi in vrni 0.
+q0,0
+samo0,0,>
+
+samo0,_
+qAccept,_,-
+
+// Najprej preveri, ali je število veljavno, torej oblike 11...10.
+q0,1
+preveri,1,>
+
+preveri,1
+preveri,1,>
+
+preveri,0
+preveriB,0,>
+
+// Če je veljavno, se vrni na začetek.
+preveriB,_
+konecPreverjanja,_,<
+
+konecPreverjanja,1
+konecPreverjanja,1,<
+
+konecPreverjanja,0
+konecPreverjanja,0,<
+
+konecPreverjanja,_
+zacetek,_,>
+
+// Spremeni prvo enko v x, in se pomakni desno do blank. Tam vpiši 1.
+zacetek,1
+desnoX,x,>
+
+desnoX,1
+desno1,1,>
+
+desnoX,0
+desno0,0,>
+
+desno1,1
+desno1,1,>
+
+desno1,0
+vpisi,0,>
+
+vpisi,_
+nazaj,1,<
+
+// Nazaj v levo do x in ponovi
+vpisi,1
+vpisi,1,>
+
+nazaj,1
+nazaj,1,<
+
+nazaj,0
+nazaj,0,<
+
+nazaj,x
+zacetek,x,> 
+
+// Če je takoj za x ničla, poišči prvi blank in tja vpiši 0
+desno0,1
+vpisi0,1,>
+
+desno0,_
+naZacetek,_,<
+
+vpisi0,1
+vpisi0,1,>
+
+// Ko vpišeš 0, idi levo do prejšnje zadnje ničle
+// in ponovi postopek prepisovanja enic
+vpisi0,_
+nazaj0,0,<
+
+nazaj0,1
+nazaj0,1,<
+
+nazaj0,0
+zacetek,0,>
+
+// Ko konča, gre na začetek, pobriše vse x do prve ničle in spremeni vsa ostala števila v 1
+naZacetek,0
+naZacetek,0,<
+
+naZacetek,x
+naZacetek,x,<
+
+naZacetek,_
+brisi,_,>
+
+brisi,x
+brisi,_,>
+
+brisi,0
+spremeniVEna,1,>
+
+spremeniVEna,x
+spremeniVEna,1,>
+
+spremeniVEna,0
+spremeniVEna,1,>
+
+// Ko pride do blank doda ničlo in zaključi
+spremeniVEna,_
+qAccept,0,-
