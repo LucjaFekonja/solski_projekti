@@ -1,0 +1,45 @@
+Baze:
+mit-bit
+ltstdb
+
+Naloga:
+Dobiš signal (.hea, .atr, .dat)
+Iz njega izračunaš svoje metrike
+
+
+V Matlabu:
+.dat pretvoriš v .mat z wfdb2mat
+Odpreš v matlabu
+V matlabu maš .asc - Kdaj so srčni utripi:
+	00:00:00.00 N 400 0 0 0   (400 je index)
+	00:00:00.00 N 600 0 0 0
+Z wrann pretvoriš .asc v .ars
+wrann -r s20011 -a qrs <s20011-asc
+Z grs primerjaš .ars z .atr datoteko
+bxb (?)
+bxb -r $f -a atr qrs -l eval1.txt eval2.txt   -> Opisano v skripti 
+cat eval1.txt
+-> Ven iz tega potegneš Nn, Vn, Fn, Nv
+
+
+sumstats - ?
+
+
+Deluje v Matlabu
+QRSDetect - sprejme .mat datoteko in vrne kje misli, da se utripi nahajajo
+Detector - Za ime posnetka npr. s20011 tvori .asc datoteko
+
+
+POROČILO:
+Vsaj eno stran
+- abstract
+- intro
+- method
+- rezultati
+- diskusija
+- literatura
+
+
+5 tč za izboljšavo
+- vzet več signalov
+- drugačna evalvacija...

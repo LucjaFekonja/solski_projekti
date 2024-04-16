@@ -1,0 +1,129 @@
+KONVOLUCIJA
+
+- Definicija 
+
+- Kaj nam koristi? 
+
+---------------------------
+- PRIMER: 
+x(n) = {-1, 2, -1}
+y(n) = {1, 2, 3, 4}
+
+x(n) * y(n) = 
+
+1. vektor                            0 | 0 | 0 | -1 | 2  | -1 | 0 |  0 |  0
+2. vektor v obratnem vrstnem redu    4 | 3 | 2 |  1              		4*0 + 3*0 + 2*0 + 1*(-1) = -1
+                                         4 | 3 |  2 |  1         		4*0 + 3*0 + 2*(-1) + 1*2 = 0
+    					     4 |  3 |  2 |  1    		4*0 + 3*(-1) + 2*2 + 1*(-1) = 0  
+						  4 |  3 |  2 | 1      		4*(-1) + 3*2 + 2*(-1) + 1*0 = 0
+						       4 |  3 | 2 |  1		4*2 + 3*(-1) + 2*0 + 1*0 = 5   
+							    4 | 3 |  2 |  1     4*(-1) + 3*0 + 2*0 + 1*0 = -4
+										ostalo 0
+R: x*y = {-1, 0, 0, 0, 5, -4}  
+
+-------------------------------
+KORELACIJA - Kako izračunaš (reši primer za izpit) 
+_______________________________
+
+KONVOLUCIJA V MATLABU:
+
+x = [-1, 2, -1]
+y = [1, 2, 3, 4]
+conv(x, y)
+>> [-1, 0, 0, 0, 5, -4]
+
+_______________________________
+
+x(n) dolžine N in y(n) dolžine M   =>   x*y dolžine N + M - 1
+
+V realnosti želimo, da je konvolucija dolžine iste kot x(n)
+
+V Matlabu lahko uporabiš conv(x, y, 'same')
+- Tu več konvolucija ni komutativna
+
+- Finta: Vzamemo samo centralni del, v katerem je prekrivanje popolno
+V našem primeru:   0 | 0 | 0 | -1 | 2  | -1 | 0 |  0 |  0
+		  	        4 |  3 |  2 |  1    		        4*0 + 3*(-1) + 2*2 + 1*(-1) = 0  
+				     4 |  3 |  2 | 1      		4*(-1) + 3*2 + 2*(-1) + 1*0 = 0
+		               	          4 |  3 | 2 |  1		4*2 + 3*(-1) + 2*0 + 1*0 = 5   
+R: [0, 0, 5]
+
+_____________________________
+
+Kje se uporablja konvolucija v realnosti?
+
+Dobimo tekoče povprečje  -->  S konvolucijo lahko tvorimo filter s tekočim povprečjem
+
+
+Recimo, da imamo 
+x = [zeros(1, 50), ones(1, 50), zeros(1, 50)]          
+To je funkcija oblike _____|------|______ (recimo)
+
+y naj bo nek krajši vektor, ki ga pomikamo naprej. Vsakič, ko ga premaknemo, pomnožimo s konvolucijo
+y = ones(1, 8)    
+vsi sampli imajo enako utež
+To je funkcija oblike --------
+
+
+plot(conv(x, y)) vrne _____/------\_____
+PRAVILNEJE: plot(x); hold on; plot(conv(x, y) / 8)
+
+--- PREMIKAJOČA VSOTA  ---
+
+--------------------------------
+
+Recimo, da imamo:
+
+x = [zeros(1, 50), ones(1, 50), zeros(1, 50)]      
+y2 = [1, 1/2, 1/4, ... 1/256]  -- eksponentno padajoča funkcija
+oz. y2 = [ones(1, 8) ./ (2.^(0:7))]
+
+plot(x); hold on; plot(conv(x, y2)) 
+- Ni več lepo trikotno
+- Zgleda podobno kot se kondenzator polni in prazni
+
+
+Kako bi naredili, da bi bil izhod enako močan kot vhod? Normiramo (deluje, če so vsi koeficienti pozitivni)
+1.  plot(x); hold on; plot(conv(x, y2) / sum(y2) 
+2.  Lahko pa že na začetku def y2 = y2 / sum(y2)
+
+______________________________________________
+
+v terminalu:
+wfdb2mat -2 s20011 -f 0 -t 4 
+-> Naloži signal v matlab
+
+v Matlabu
+load('s20011.dat')  
+sig1 = val(1,:)
+plot(sig1)
+
+-> Narišimo konvolucijo s premikajočo vsoto
+-> y = ones(1, 8)
+-> Delimo z 8, da izhod ni ojačan
+hold on; plot(conv(sig1, y, 'same') / 8)
+
+-> Dobimo isto sliko kot sig1, ampak bolj zglajeno
+-> Še bolj gladko bonimo, če je y daljiši
+y3 = ones(1, 100)
+hold on; plot(conv(sig1, y3, 'same') / 100)
+
+PROBLEM, ČE POVEČUJEMO VELIKOST y:
+Med dvema beep je recimo 200 samplov. Če je y dolg, bo več samplov vzel skupaj in bo slika bolj blurry
+
+
+------------------------------------
+
+Recimo da uporabimo y2 na sig1
+-> Dobimo sliko signala ojačano bolj na koncu kot na začetku, ker je obrnjen y2 naraščajoča eksponentna funkcija 
+
+-----------------------------------
+
+Če ne uporabimo 'same' 
+-> Dobimo zakasnitev filtrov
+-> Vsak realen primer ima zakasnitev
+
+Npr. EKG 
+-> Če obdeluješ na signalu s filtrom, dobiš, da so beepi kasneje kot so dejansko
+-> Recimo da je dejansko pri 250, ti pa ga zaznaš pri 300
+-> Problem, ker obstaja max za katerega se lahko zmotiš pri zaznavanju

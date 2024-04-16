@@ -1,0 +1,41 @@
+xform - vse posnetke pretvori v pravo obliko (na isto frekvenco)
+
+xform -i s20011
+-> To je nas vhoden posnetek
+
+-> ime
+-> 2
+-> št frekvence (iz 250 na 360 npr.)
+-> ostalo enter
+
+-> Dobimo posnetek vzorčen na 360Hz
+
+rdann -r s20011 -a atr -f 0 -t 5
+-> dobimo eneindekse
+
+------------------------------------------
+
+xform -i s20011 -a atr
+-> Dobimo tudi oznake kardiologov
+
+rdann -r s20011 -a atr -f 0 -t 5
+
+------------------------------------------
+HOČEMO SAMO EN DEL DNEVA VIDET
+rdann -r s20011 -a atr -f 1:00:00 -t 1:00:05
+
+Najbolj robusten algoritem dobimo, če algoritem zaženemo na čim več posnetkih
+
+
+
+------------------------------------------
+Download celo bazo 
+- prenesi zip file
+- uporaba skripte mitbit.sh ali ltstdb.sh
+
+
+------------------------------------------
+KAKO POSNETEK .dat UPORABIMO V MATLABU?
+
+
+

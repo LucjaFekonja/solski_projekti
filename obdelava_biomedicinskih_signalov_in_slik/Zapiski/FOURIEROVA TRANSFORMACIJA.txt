@@ -1,0 +1,542 @@
+FOURIEROVA TRANSFORMACIJA
+
+Matlab:
+Fs = 100;
+
+-> Imamo dve frekvinci
+f1 = 20;
+f2 = 7;
+
+-> Število semplov
+N = 512;
+
+-> Časovni vektor v sekundah
+t = (0 : N-1) / Fs;
+
+-> Signal s frekvenco f1 (oz. f2) vzorčen v t
+x1 = cos(2 * pi * t * f1)
+x2 = cos(2 * pi * t * f2)
+
+plot(x1)
+plot(x2)
+
+-> Vsota signalov
+y = x1 + x2
+plot(y)
+
+-> Ali iz slike y znamo ugotoviti iz katerih frekvinc je y sestavljen?
+-> Fourier
+Y = fft(y)
+
+plot(Y)  --> zvezdica
+	 --> Problem je v tem, da Fourier vrne kompleksna števila
+
+plot(real(Y))  --> Problem, ker smo v časovnem prostoru na x osi (1 do 512) in ne v frekvenčnem
+
+f = (0 : N-1) / N * Fs;
+plot(f, real(Y))
+
+-> Opazimo, da je od Fs/2 realna os simetrična  -  plot(f, real(Y)) je "soda" na Fs/2
+						-  plot(f, imag(Y)) je "liha" na Fs/2
+
+
+----------------------------------------------
+KOMPLEKSNIM ŠTEVILOM LAHKO RIŠEMO REALNI DEL, IMAGINARNI, DEL, DOLŽINO VEKTORJA
+
+plot(f, abs(Y))
+-> Izriše amplitudni spekter
+
+Problem: Pričakovali bi na amplitudenm spektru dve horinzotalni palči pri 7Hz in pri 20Hz
+Zakaj?  Fourier pričakuje, da je signal periodičen. 
+	Na koncu in začetku takega periodičnega signala imamo nezveznost, kar nam daje hribčke namesto palčk
+
+Kako rešiti? Uporabi okenske funkcija
+
+-------------------------------------------------
+KOMPLEKSIM ŠTEVILOM LAHKO RIŠEMO KOT
+
+plot(f, angle(Y))
+-> Izriše fazni spekter
+-> Uporabno pri obravnavi lastnosti filtrov
+
+-------------------------------------------------
+
+plot(f, abs(Y).^2)
+-> Močnostni spekter
+
+____________________________________________________
+
+load('s20011m.mat')
+sig1 = val(1,:)
+plot(sig1)
+
+-> Namesto, da to vedno znova nalagaš in rišeš, maš na učilnici dve skripti showSpecs.m  in showSpecsN.m 
+
+showSpecs(sig1, 250)
+-> Fazni spekter neuporaben
+-> V amplitudnem spektru je najbolj razvejan začetek. Veliko je semplov z 0Hz (ravna črta)
+
+-> REcimo, da nas zanima začetek signala
+y2 = y1(1:50)
+-> Rezultat Fourierove transformacija na y2 bo 50 dolg
+
+showSpecs(y2, 50)
+-> Na x osi imamo samo 25 frekvenc -> Slika amplitudnega spektra je zelo špičasta
+
+-> Če v y2 dodamo 0, dobimo lepšo sliko, ampak nič nismo pridobili
+
+
+y = ones(1000000, 1)
+showSpecs(y, 1000000)
+-> Pri 0 dobimo špico
+-> Več kot je signalov, boljšo resolucijo frekvenčne slike dobimo
+
+
+_______________________________________________
+
+Hočemo odstranit visoke in nizke frekvence
+UPORABI FILTER
+Definiran z lin. diff. enačbo s konst. koeficienti
+
+y(n) = sum_{m=0}^{M} b_n x(n-m)
+-> To je FIR
+-> Izhod je samo konvolucija
+-> Če je izhod odvisen le od vhoda ==> Finite impuls response (KONČNI OZDIV nA ENOTIN IMPULZ)
+				       Samo eno enico damo pri x=0
+
+y(n) = sum_{m=0}^{M} b_n x(n-m) + sum_{k=1}^{K} a_n y(n-k)
+-> To je IIR
+
+
+V Matlabu:
+filter(b, a, x)
+
+Stopnja filtra: max(M, K)
+
+
+LASTNOSTI FILTRA
+1. Impulz response (odziv na enoten impulz) h(n) = namesto x(n) vstaviš 'd(n)
+-> impulz končen => Filter s končnim odzivom na enotni impulz  (FIR) 
+-> impulz neskončen => Filter s neskončnim odzivom na enotni impulz
+
+2. Filter lahko pišeš kot konvolucijo odziva na enotin impulz: y(n) = h(n) * x(n)
+
+3.
+časovni prostor  |  frekvenčni prostor
+--------------------------------------
+    x(n)         |     X(e^(jn))
+    y(n)         |     Y(e^(jn))
+ x(n) * h(n)     | X(e^(jn)) * H(e^(jn))
+
+Če y(n) = x(n) * h(n) v časovnem
+Potem Y(n) = X(e^(jn)) * H(e^(jn))
+Torej H(n) = Y(n) / X(n) 
+Odziv v frekvenčnem prostoru nam pove kako se filter obnaša pri različnih frekvencah (katere frekvence ojača/duši/spusti skozi)
+
+
+
+_______________________________________________________
+
+PRIMER
+
+y(n) = 1/4 x(n) + 1/4 x(n-1) + 1/4 x(n-2) + 1/4 x(n-3)
+-> To je FIR (samo en y(n))
+
+Kako implementirati v Matlab?
+y = filter(b, a, x)
+-> b in a sta vektorja koef.
+-> b ... nominator koef.
+-> a ... denominator koef.
+
+
+----->
+Zakaj taka imena v Matlabu?
+
+časovni prostor  |  transformacijski par
+--------------------------------------
+    x(n)         |     X(z)
+    y(n)         |     Y(z)
+  x(n-m)         |   X(z) z^(-m)
+
+
+Naredimo transformacijo na filtru:
+Y(z) - sum_{k=1}^{K} a_n Y(z) z^(-k) = sum_{m=0}^{M} b_n X(z) z^(-m)
+
+Deli z X(n):
+Y(n) / X(n) = sum_{m=0}^{M} b_n z^(-m) / (1 - sum_{k=0}^{K} a_n z^(-k) )
+
+
+!!! Matlab pričakuje, da imamo DE podano kot:
+sum_{k=0}^{K} a_n Y(z) z^(-k) = sum_{m=0}^{M} b_n X(z) z^(-m)
+
+
+V našem primeru: 
+-> b = [1/4, 1/4, 1/4, 1/4]  
+-> a = [1]
+<-----
+
+
+
+SPIŠIMO V MATLABU:
+>> b = [1/4, 1/4, 1/4, 1/4]  
+>> a = [1]
+>> load('s20011.dat')  
+>> x = val(1,:)
+>> plot(x)
+
+>> y = filter(b, a, x)
+
+-> sliki signala in filtra 
+
+
+-> Katere signale spusti?
+
+Definiraj enoten impulz
+>> d = [1 zeros(1, 511)]
+>> h = filter(b, a, d) 	... odziv na enotin impulz h(n) = b_n
+-> Filter ima končen odziv = dolg enako kot b 
+
+Pogledati moramo spekter od H
+>> H = fft(h)
+>> plot(abs(H))
+ali
+>> showSpecs(h, 250) ... pokaže frekvenčni spekter od impulznega odziva
+
+-> Kaj prepušča skozi? (ampl. odziv)
+-> Ima linearno zamaknjenost (fazni odziv)
+
+___________________________________________________________
+
+PRIMER 
+y(n) = 'a y(n-1) + x(n)
+-> neki leakage filter 
+
+-> Ima končen ali neskončen odziv na enotin impulz?
+Namesto x daj 'd
+(Pred. y(-1) = 0)
+y(0) = 'a * 0 + 'd(0) = 1
+y(1) = 'a * 1 + 'd(1) = 'a
+y(2) = 'a * 'a + 'd(2) = 'a^2
+...
+y(n) = h(n) = {a^n | n >= 0;
+	       0   | sicer } 
+
+
+-> Je stabilen? 
+Ja, če je 'a < 1. Zakaj?
+Potreben in zadosten pogoj, da je filter stabilen:  sum_{n=0}^{inf} abs( h(n) ) = c
+						    vsota te vrste je končna 
+
+Torej imamo vrsto: 1 + 'a + 'a^2 + ... = 1 / (1-'a)
+To je končno, če je 'a < 1
+
+
+-> Spiši v Matlabu:
+>> b = 1
+>> a = [1, -alpha]  (vnaprej def alpha = 0.75)
+
+
+-> Kakšna sta amplitudni in fazni odziv? (skupaj tvorita frekvenčn odziv)
+>> d = [1 zeros(1, 511)]
+>> h = filter(b, a, d)
+Dobiš aproksimacijo filtra (v matlabu maš končno, v resnici je inf)
+h je padajoča eksponentan funkcija
+
+Amplitudni odziv = padajoča eksponentna funkcija
+-> Višja kot je frekvenca, manj signalov bo spustilo skozi
+
+Fazni odizv = ni lin.
+
+
+-> Spremenimo alpha = 0.25
+	Amplitudni odziv = Pada počasneje
+
+-> Spremenimo alpha = 0.99
+	Amplitudni odziv = Pada hitreje
+	Nizkofrekvenčne komponente spušča, visoke skorajda nič
+
+
+
+-> Kako bi enačbo filtra napisala v z prostoru (funkcija def v kompleksni ravnini)?
+	y(n) = 'a y(n-1) + x(n)
+	Y(z) = 'a Y(z) z^(-1) + X(z)
+
+	=> H(z) = Y(z) / X(z) = 1 / (1 - 'a z^(-1))
+
+-> Ali lahko s pomočjo enačbe v z prostoru povemo kaj o stabilnosti?
+	NIČLA: z = 0
+	POL: z = 'a
+	Filter je stabilne, če je pol znotraj enotine krožnice 
+	
+-> Spremenimo alpha = 1.1
+	Zdaj je pol zunaj enotske krožnice 
+	>> y = filter(b, a, x)
+	Po 1200 smp spušča frekvence visoke inf.  == NESTABILEN
+
+
+__________________________________________________________
+
+PRIMER
+y(n) = -1/6 y(n-1) + 1/18 y(n-2) + x(n) 
+
+z transformacija:
+Y(z) + 1/6 Y(z) z^(-1) - 1/18 Y(z) z^(-2) = X(z) 
+H(z) = Y(z) / X(z) = 1 / (1 + 1/6 z^(-1) - 1/18 z^(-2)) = z^2 / ((z + 1/3)(z - 1/6))
+
+NIČLA: z = 0
+POL: z = -1/3 in z = 1/6
+-> Vsi poli so znotraj enotske krožnice => FILTER STABILEN
+
+
+-> Implementacija v Matlab:
+	>> a = [1 1/6 1/18]
+	>> b = [1]
+	>> y = filter(b, a, x)
+	>> zplane(b, a)  ... Kje se nahajajo ničle in poli v z ravnini? (nariše Pole-Zero Plot)
+
+
+-> Skripta plotz
+	[-1, 1]x[-1, 1] razdeli na grid
+	V vsaki točki grida izračuna vrednosti filtra
+	Slikica : pri polih so hribi ; pri ničlah ravnina
+
+	Krožnica v z ravnini: z = e^(iw), w od 0 do 2*pi
+	Diskretna Fourierova transformacija = sempliraš po enotski krožnici -> Pri pi = F_(s/2)
+									       Pri 2*pi = F_s
+
+
+-> Odziv na enotin impulz filtra:
+	>> showSpecs(h, 2*pi)
+	Na 0Hz ... Filter ima ojačanje 0.9
+	Na pi Hz ... Filter ima ojačanje 1.25
+
+
+______________________________________________________________
+
+PRIMER
+
+H_1(z) = (1 - z^(-M)) / (1 - z^(-1))
+-> Prenosna karakteristika  
+
+-> Zapiši enačbo filtra:
+	y(n) - y(n-1) = x(n) - x(n-M)
+	To je ?IR
+
+-> Za M=4:
+	y(n) = x(n) - x(n-4) + y(n-1)
+	To je ?IR
+
+-> y(n) = x(n) + x(n-1) + x(n-2) + x(n-3) 
+	To je FIR
+	Prestavimo: y(n-1) = x(n-1) + x(n-2) + x(n-3) + x(n-4)
+	Torej y(n) =  x(n) - x(n-4) + y(n-1)
+	
+H_1 je torej rekurzivna implementacija M-točkovnega moving sum filtra
+
+
+-> Kako izgleda prenostna funkcija?
+	y(n) = x(n) + x(n-1) + x(n-2) + x(n-3) :  H(z) = 1 + z^(-1) + z^(-2) + z^(-3)
+	y(n) =  x(n) - x(n-4) + y(n-1)         :  H(z) = (1 - z^(-4)) / (1 - z^(-1)) = 
+						       = (z^4 - 1) / (z^4 - z^3) =  
+						       = (z^4 - 1) / (z^3 (z - 1)) = 
+						       = (z-1)(z+1)(z-i)(z+i) / (z^3 (z - 1))
+	Ničla in pol se krajšata pri 0Hz
+	-> Pri 0Hz imamo neko vrednost, ki pade na 0 pri w=pi/2, pol spet hribček, ki pade na 0 pri w=pi
+
+
+Transferna karakteristika: H_1(z) = ((1 - z^(-m)) / (1 - z^(-1))^M
+-> Moving sum average
+
+-> Iz H_1 je preprosto najti koeficiente a in b
+	Če m = 4: b = [1, 0, 0, 0, -1]
+		  a = [1, -1];
+	Lahko uporabljaš filter(b, a, x)
+			 zplane(b, a) -> Dobiš enotsko krožnico z ničlami in poli
+			 freqz(b, a) -> 6 pomeni ojačanje za faktor 6, -2 pa slabitev za faktor 2
+-> Hitro lahko presodimo ali je filter stabilen
+-> Če pogledamo vrednost H_1 (z transformacija) na krožnici, dobimo fourierovo transformacijo
+	Lahko pogledamo kakšne vrednosti ima H_1 na krožnici = Enako kot da bi delal fourerovo trans. v točkah krožnice na enotin impulz
+	NALOGA: Brez Fourierove transformacije ugotovi katere frekvence filter spusti, duši...
+
+
+zplane(b, a) -> Dobiš enotsko krožnico z ničlami in poli
+H_1 lahko razstavimo: H_1 (z) = H_(1a) (z) / H_(1b) (z)
+| H_1 (z) za z=e^(jw) | = | H_(1a) (z) za z=e^(jw) | / | H_(1b) (z) za z=e^(jw) |
+
+H_(1a) (z) = 1 - z^(-4) = z^4 - 1
+-> Na na enotini krožnici 4 ničle - ravnine
+-> Zmes narastemo in pademo na 0 pri naslednji ničli
+-> Zrcalno glede na x-os (ker je fourierova trans)
+-> Pogledamo krožnico 
+-> Recimo, da je Fs = 500Hz. Nariši | H_(1a) (z) |
+	Imaš 4 ničle: 0Hz, 125Hz, 250Hz, (375Hz, 500Hz - zrcalna slika)
+	Zmes hribčki
+
+!!! a - z^(-m) da na enotsko krožnico m ničel !!!
+
+H_(2a) (z) = 1 - z^(-1) ima eno ničlo pri 0Hz
+	Če raztegneš kot da je enotska krožnica x os, imaš graf z enim hribčkom
+
+Kako bi narisali | H_1 (z) | = | H_(1a) (z) | / | H_(1b) (z) |?
+	-> V 0 imaš 0/0, ampak se evaluira v neko konst.
+	-> Dobiš 4 hribčke. Zunanja dva višja od notranjih
+
+
+SKRIPTA: TransferCharacteristic1(m, 1)  -- m eksponent v števcu, 1 v imenovalcu
+	-> pred. Fs = 500Hz
+	-> Na 1000 točkah krožnice preveri vrednost H(z)
+	-> Da preverja samo na krožnici se evaluira na z = e^(jw) = e^(j 2pi F/Ft?)
+	-> fn1 evaluira H_(1a)
+	-> fn2 evaluira H_(1b)
+	-> fn3 evaluira H_1
+	-> Dobimo H_1a, H_1b in H_1 filtra
+
+PRIMER: H_1(z) = ((1 - z^(-8)) / (1 - z^(-1)))
+	-> 8 ničel na krožnici
+	-> En pol na krožnici
+	-> Raztegneš krožnico na ravnino (narišeš na roko) H_(1a) in H_(1b)
+	-> Deliš
+	-> 0/0 je konst faktor
+	-> H_1 ima 8 hribčkov, vsak manjši od prejšnjega, pol spet naraščajo
+	
+
+KOLIKŠNA JE ZAČETNA KONSTANTA? G = m
+			       D = (m - 1) / 2
+-> Poglej enačbo moving sum filtra in vidiš, da ima pri 0Hz vsoto m
+
+-----------------------------------------------------------------
+
+KAJ PA M?
+
+Če na signalu najprej izvedemo en filter H_1, pol pa še drugega H_2 sekvenčno, dobimo en nov filter, ki je ravno njun produkt
+Kako to vpliva na sekvenčni odziv?
+
+Naj bo H_1(z) = ((1 - z^(-8)) / (1 - z^(-1)))^2
+Za notranji del: b1 = [1 0 0 0 0 0 0 0 -1]
+		 a1 = [1 -1]
+Za polinome je pravi a in b konvolucija:
+		 b = conv(b1, b1)
+		 a = conv(a1, a1)
+Ničle: 8, isto kot prej (ampak dvojne)
+
+Ojačanje pri 0Hz je G = m^M
+Zakasnitev je D = (m - 1)/2 * M
+
+Procedura: Nariši H_1a in H_1b 
+	   Deli
+	   Dobiš H_1
+	   Kvadriraj (oz. ^M) dobljeno H_1
+
+Dobiš isto kot TransferCharacteristic1(m, 2)
+
+
+Velja: |H(w)^2| = |H(w)|^2, zato ni tolko nujen M
+
+
+Razlika: |H_1a(w)| je neodvedljiva v ničlah
+	 |H_1a(w)|^2 je bolj zaobljena v ničlah
+
+	 |H_1b(w)| je hrib
+	 |H_1b(w)|^2 je bolj nabuhtel hrib
+
+_________________________________________________________________________
+
+Imejmo karakteristiko: H_2(z) = (1 + c_k * z^(-j))^N
+
+Recimo:
+N = 1
+j = 4
+c_k = - 1
+
+Dobimo H_2(z) = 1 - z^(-4)
+
+-> Sam po sebi filter ni uporaben
+-> Z njim lahko postavljamo ničle znotraj/zunaj/na krožnico
+
+SKRIPTA: transferCharacteristic2(-1, 4, 1)
+
+Tu je ojačanje G = 2^N
+
+
+Recimo:
+N = 1
+j = 4
+c_k = 1
+
+Dobimo H_2(z) = 1 + z^(-4)
+
+Ničle: pi/4 = pi/j, 3pi/4, 5pi/4, 7pi/4
+-> Začneš s pozitivno absolutno vrednostjo pri 0Hz
+-> Padeš na 0 pri pi/4
+-> Razdegnjena krožnica: Najprej pol hribčka, pol en cel
+
+-> Neuporaben filter, ker spušča skozi čudno
+
+
+-----------------------------------------------------------
+
+Če je c_k = 1 ali -1, ničle ležijo na enotski krožnici
+
+Recimo:
+c_k = 0.7
+
+Potem je H_2(z) = 1 + 0.7 z^(-4)
+b = [1 0 0 0 0.7]
+a = [1]
+
+Ničle so znotraj krožnice. 
+H_2 nikoli ne pade na 0.
+Tudi tak filter ni uporaben preveč
+
+Če je c_k > 1, pol postavimo zunaj krožnice => Dobimo nestabilen filter 
+Če je c_k = 1, pol postavimo na krožnico => Filter pade na 0
+
+-----------------------------------------------------------
+
+Mi bi radi meli kak filter, ki bi zgledal bolj kot ''''\....
+Zdaj zgleda bolj '\.....
+
+Zato lahko dodamo en pol znotraj krožnice na 1. kvadrantu, da dobimo lokalni vrh. Posledično se bo H_2 malo bolj izognil temu polu in bomo dobili željeno funkcijo.
+Zato naš filter množimo z 1 / (1 + c_k^(-1))^N
+
+SKRIPTA: transferCharacteristic2(0.25, 3, 1, 4, 2)
+
+Recimo, da postavimo tri ničle v notranjost => Torej množimo naš filter z 1 / (1 + 0.25 z^-3)
+Primer v skripti: ((1 - z^(-4)) / (1 - z^(-1)))^2 * 1 / (1 + 0.25 z^-3)
+
+
+-> Spreminjaš parametrje, da ostane prvi hrib hrib malo dlje, ampak tudi nočeš, da zmes filter naraste zaradi dodajanja polov
+
+_______________________________________________________________________
+
+Poglejmo: H_2(z) = ((1 + a_k z^(-m)) / (1 + a_k z^(-n)))^M
+
+Recimo:
+M = 1
+m = 330
+n = 10
+a_k = b_k = -1
+
+-> Na enotski krožnici je 330 ničel in 10 polov
+-> H_4a ima 330 hribov
+-> H_4b ima 10 hribov
+-> Upamo, da ničle sovpadajo s poli, saj imamo sicer nestabilen filter (ker poli niso znotraj krožnice)
+
+SKRIPTA: transferCharacteristic4(-1, -1, 330, 10, 1, 1)
+         transferCharacteristic4(a_k, b_k, m, n, M, N)
+
+
+-> Poli in nule se res krajšajo
+-> Filter ojača frekvence 0Hz, 50Hz, 100Hz, 150Hz 
+-> Mi pa bi radi te frekvence raje ošibkili
+
+
+-> Če se katere ničle in poli ne bi krajšali, bi šel na določenih mestih filter v inf
+
+
+
+
+
+
+
+

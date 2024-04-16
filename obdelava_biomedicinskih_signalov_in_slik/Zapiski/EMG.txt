@@ -1,0 +1,63 @@
+TPEHGDB
+
+300 posnetkov
+-- Early (23 teden)
+-- Late  (31 teden)
+>> Preterm 
+>> Term
+
+Prezgodnji porod (<= 37 tednov)
+
+
+___ .smr ___
+-> V katero od štirih skupin spada posnetek
+
+
+
+WFDB
+cmd:
+wfdb2mat -r tpehg1007
+
+matlab:
+load("tpehg1007m.mat")
+sig = val(4,:)
+plot(sig)
+
+Skripta: doSpectogram (
+-> Vidimo tri vodoravne črte na dnu = Materino srce (trenutna frekvenca materinega srca)
+
+Pristop: Feature engineering
+-- VZORČNA ENTROPIJA = Značilka, ki za signal v frekvenčnem prostoru, govori o naključnosti serije
+			Višja = Vse je bolj naključno
+			Nižja = Vse je bolj določeno in predvidljivo
+-- matlab: s = sampEn(x, m, r)
+	   x ... signal
+	   m = 2 ali 3
+	   r = 0.15 ... standardna diviacija 
+
+-- Skripta: samplingEntropy(sig, 3, 0.15)
+		Za tphg1007: s = 0.6766
+		S tem lahko poskusiš napovedat al bo porod prezgodenj
+
+-- Skripta iz physioneta: sampen.m in sampenc.m (Sample Entropy _ 1.0.0
+	sampen(sig, 3+1, 0.15, 1, 0, 0) -> Dobiš vektor (izračuna za vse manjše m)
+
+
+KAJ VZORČNA ENTROPIJA POVE?
+-- Odvisno od tega v katro skupino spada posnetek
+-- Vzorčna entropija pri prezgodnjih postnetkih je v povprečju nižja kot pri terminskih ne glede na to kdaj je bil posnetek narejen
+
+-- STUDENTOV T TEST
+[h p] = ttest2(vector_vrednosti_p1, vektor_vrednosti_t1)
+
+- Recimo, da primerjamo PL in TL 
+	ČE dobiš p = 1, je možnot razlikovanja značilk med skupinama mala
+	Če je p majhen je možnost razlikovanja velika
+- str. 918 v članku -- pomembni posnetki: p1, p2, p6
+
+
+Za seminarsko: 
+Naredi scatterplot za p1, p2, p6
+Nariši povprečje
+Naredi tteste
+-- Jager, assessing velocity

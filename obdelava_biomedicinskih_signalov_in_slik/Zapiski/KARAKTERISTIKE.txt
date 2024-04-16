@@ -1,0 +1,39 @@
+NADALJEVANJE
+
+PRENOSTNE KARAKTERISTIKE
+
+H_4(z) = (1 + a_k z^(-m))^M / (1 + a_k z^(-n))^N
+
+
+POGOJ ZA STABILOST: Vsi poli so znotraj enotske krožnice
+-> transferCharacteristic4 = ojača šum
+			   = uporaben, če vzamemo signal in odštejemo šum
+			   = Problem: odštevanje
+				      y1 = filter(a, b, x)
+				      y2 = x - filter(a, b, x)  -> Od vhodnega signala odštejemo šum, dobimo signal brez šuma,
+								   če imata signal in filter enako ojačitev (gain) in zakasnitev
+								-> G = (m / n)^M
+								-> D = ((m - n) / 2) * M
+
+				      1. Moramo deliti s faktorjem G => y2(n) = x(n) - filter(a, b, x) / G
+				      2. Moramo odšteti zakasnitev D => y2(n) = x(n - D) - filter(a, b, x) / G
+
+				      ==>> y2(n) = x(n - D) - filter(a, b, x) / G  dejansko odstrani šum
+
+
+5. PRENOSNA KARAKTERISTIKA
+H_5(Z) = z^(-D) - H(z) / G
+
+a = [1 zeros(1, 330) -1]
+b = [1 zeros(1, 330) -1]
+transfercha5(-1, -1, 330 , 10, 1, 1)
+-> Se znebi frekvenc pri 50, 100, 150...
+
+kvadriramo
+transfercha5(-1, -1, 330 , 10, 2, 2)
+-> Zoža špice pri 50, 100...
+
+transfercha5(-1, -1, 60 , 10, 2, 2)
+-> 60 deljivo z 10 => Poli se krajšajo
+
+=> 4. mesto mora deliti 3. mesto, da je zakasnitev odsekoma linearna

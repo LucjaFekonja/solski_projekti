@@ -1,0 +1,181 @@
+FIR FILTRI
+
+x(n) = sum_(m=0)^(M) b_m x(n-m)  +  sum_(k=1)^(K) a_k y(n-k)
+
+--------------------------------------------
+x(n) = sum_(m=0)^(M) b_m x(n-m)
+-> Stabilen 
+-> 4 točkovni moving sum filter :  b = [1 1 1 1]
+
+
+Kaj če bi hoteli, da filter prepušča frekvence do F_s/6, naprej pa več ne? LOW-PASS FILTER
+		|----
+		|    |
+		|    |___________lol
+
+Kaj če bi hoteli, da filter ne prepušča frekvence do F_s/6, naprej pa? HIGH-PASS FILTER
+
+
+V Matlabu: 
+b = fir1(M, __ , 'high');
+	    -> Normalizirana frekvenca: 0 -> 0Hz
+					1 -> F_(s/2)
+
+Mejna frekvenca: Frekvenca pri kateri ojačanje filtra pade iz 1 na 0.707
+
+
+
+Recimo, da hočemo, da filter prepušča frek. do F_(s/6), naprej pa ne
+Fs = 250
+fc = 30;
+b = fir1(100, fc / (Fs/2),'low')
+a = 1
+freqz(b, a, 512)
+
+[H, W] = freqz(b, a, 512)
+plot(W / (2*pi)*Fs, abs(H))
+-> Iskani filter
+
+
+___________________________________________________________________
+
+EKG, katerega baseline niha 
+Mi bi radi prišli do EKG brez tega baseline nihanja
+Odstraniti moramo nizke frekvenca 
+
+load('s20501m.mat')
+x = val(2,:)
+plot(x)
+
+fc = 0.8
+b = fir(100, 0.8 / (Fs/2), 'high')
+-> 100 točkovni filter 
+-> spušča frekvence višje od 0.8
+
+[H, W] = freqz(b, a, 512)
+plot(W / (2*pi)*Fs, abs(H))
+=> Še vedno niha -> Vzeti je treba več koeficientov kot 100
+		    Koliko pa? 
+		    Uporabi skripto evalfir.m  --> Zaganjaš postopoma in vidiš pri katerem št. koef. se zravna
+
+		 -> Recimo, da vramemo 1200 točkovnega
+		 -> Problem: Zakasnitev 
+
+       		 -> grpdelay(b, a)  => izračuna kakšen je dely filtra
+
+
+_______________________________________________________________________
+
+H_6(z) = (1 - z^(-k))^m * (1 - z^(-n)) / (1 - z^(-1))
+
+		(* H_2 *)  *  (* H_1 filter n-točkovni moving avg. *)	
+
+
+NALOGA:
+Kaj je prenosna karakteristika, če je označevalna frekvenca F2 = 600Hz?
+Filter: H(z) = (1 - z^(-6)) * (1 - z^(-4)) / (1 - z^(-1))
+Kakšen je fazni in kakšen amplitudni odziv?
+Kaj naredi s fiziološkimi signali?
+
+1. Prepiši: H(z) = H_a(z) * (H_b(z)) / (H_c(z))
+2. Nariši abs(H_b(z))  -> dva enako visoka in široka hribčka do 300Hz		 
+		       -> širina enega: 150
+		       -> višina enega: 4
+
+3. Nariši abs(H-c(z))  -> pol hribčka do 300Hz višine 1
+
+4. Nariši abs( H_b(z) / H_c(z) )  -> Deli slikici
+				  -> Začetna vrednost je 4
+
+OPAZIMO ZA abs( H_b(z) / H_c(z) ) : G = n
+				    D = (n-1) / 2
+
+5. Nariši abs(H_a(z))  -> trije enako visoki in široki hribčki
+		       -> višina: 2^m
+
+OPAZIMO ZA abs(H_a(z)) : G = 2^m
+			 D = k*m / 2 
+
+6. Nariši |H(z)| -> Pomnoži narisana grafa  == AMPLITUDNI ODZIV H(z)
+
+
+Kolikšno je maksimalno ojačanje filtra? Manj kot 8
+Tudi peak se premakne na manj kot 50Hz
+
+OPAZIMO:  maxG = n * 2^m     				(gain se množi)
+	  D    = k*m / 2 + (n - 1) / 2 = 4.5 vzorcev	(delay se sešteva)
+
+					 4.5 vzorcev oz. 4.5/600 sekunde
+
+__________________________________________________________________
+
+Risanje s skripto:
+transfercharacteristic6(f2, k, m, n)
+
+Primer: transfercharacteristic6(600, 6, 1, 4)
+
+___________________________________________________________________
+
+UPORABNOST H_6 FILTRA
+-> Poudajra hitre prehode/spremembe v signalu v okolici 50Hz, če je m=1 (deluje kot 1. odvod)
+-> Poudarja visoke naklone
+
+___________________________________________________________________
+
+PRIMER:
+Filter: H(z) = (1 - z^(-6))^2 * (1 - z^(-4)) / (1 - z^(-1)) 
+
+1. Prepiši: H(z) = H_a(z)^2 * H_b(z)
+
+2. Nariši |H_b(z)| kot prej
+
+3. Nariši |H_a(z)| kot prej
+4. Kvadriraj -> Pri ničlah dobiš zvezen prehod
+	     -> Ojačanje je 4
+
+5. Pomnoži + upoštevaj počasno rast, ki nastane zaradi H_a(z)^2  !
+		in ostre špice v nič, ki nastanejo zaradi H_b(z) ! 
+
+OPAZIMO: Ojačanje ne doseže 16
+
+
+ZAKAJ JE TA FILTER UPORABEN?
+-> Poudarja vrhove neke vhodne funkcije, če je m=2 (delije kot 2. odvod)
+
+
+_____________________________________________________________________
+
+Če maš neki QRS kompleks, s filtrom m=1 poudariš kompleks, z m=2 pa vrhove.
+_____________________________________________________________________
+
+Na predavanjih: Fs = 500Hz
+Imeli smo filter z eksponenti -12, -10, -10
+
+Mi bomo te eksponente razpolovili pri obravnavi signala s20501m.mat, ker je tu Fs=250Hz
+
+Imamo filtra:
+b1 = conv([1 0 0 0 0 0 -1], [1 0 0 0 -1])
+a1 = [1 -1]
+-> Poudarja naklone
+
+b2 = conv( conv( [1 0 0 0 0 -1], [1 0 0 0 0 -1]) [1 0 0 0 0 -1])
+a2 = [1 -1]
+-> Poudarja vrhove
+
+y1 = filter(b1, a1, x)
+y2 = filter(b2, a2, x)
+Vsota: ysum = abs(y1) + abs(y2)
+
+Potem ysum seštejemo po vseh kanalih in to vsoto kvadriramo
+plot(ysum .* ysum)
+-> Ta slika ima nazobčene vrhove
+-> Zgladimo jo z 20 točkovnim moving avg.
+
+b3 = [1 zeros(1, 19) -1]
+a3 = [1 -1]
+ysq = ysum .* ysum
+plot(filter(b3, a3, ysq))
+
+
+SKRIPTA: evaldetect.m
+

@@ -1,0 +1,106 @@
+OBDELAVA SLIK
+
+Slika = matrika vrednosti
+
+Branje slik:
+lenna = imread('Lenna.png')
+
+Prikazovanja slik:
+imshow(lenna)
+
+Koliko je rdeče: imshow(lenna(::,1))
+Koliko je zelene: imshow(lenna(::,2))
+Koliko je modre: imshow(lenna(::,3))
+
+Siva slika:
+glenna = rgb2gray(lenna)
+imshow(lenna)
+
+
+_____________________________________
+
+slice = imread('0001.png')
+imshow(slice)
+slice (200:205, 200:205) -- kos lobanje
+
+_____________________________________
+
+Kako bi invertirali sliko?
+islice = 255 - slice 
+
+Shranjevanje slik:
+imwrite(islice, '0001-invert.png')
+
+abs(slice - 255) - vrna črno sliko
+Smo v unit8 - kar koli gre v minus, se nastavi na 0
+
+
+____________________________________
+
+MOVING SUM
+- vsak pixel je odvisen od sebe in svojih sosed, kjer so vsi enako obteženi
+
+kernel = ones(3, 3)/9
+fslice = conv2(slice, kernel, 'same')
+--> same ... velikost izhodne slike enaka kot vhodne
+--> Na robu slike, kjer ni pixlov, je teža = 0
+
+Problem: conv2 naredi 512x512 double -- rabiš unix8
+Rešitev: imshow(fslice / 255)
+
+
+kernel = ones(11, 11) / 121
+fslice = conv2(slice, kernel, 'same')
+imshow(fslice / 255)
+Lahko tudi: imshow(fslice, [0 255]) - 0 je črna, 255 je bela
+	    imshow(fslice, [0 255]) - min od vseh vrednosti je črna, max je bela
+
+==> Dobimo zglajeno sliko
+
+____________________________________
+
+Lahko tudi filtriraš z:
+islice = imfilter(slice, kernel) -- naredi sliko v unix8
+imshow(islice)
+
+Slabost imfiltra: Zaokroževanje
+
+Lahko se izogneš:
+dslice = im2double(slice)
+-> Če zdaj uporabljaš imfliter si ok
+
+___________________________________
+
+Ne rabijo vsi pixli v okolici imet iste uteži
+Lahko: Dlje kot greš stran, manjši pomen ima
+
+kernel = fspecial('gauss', [7, 7], 1.0)
+--> sigma = 1.0 ... koliko vpliva ima pixli tem dlje kot gremo od centralnega pixla
+--> sigma = 0.5 ... lahko zmanjšaš velikost kernela na [5 5]
+--> Vačji sigma = večji efekt glajenja
+
+Pravilo: size = 6*sigma
+--> če sigma = 1 => velikost = [6 6]
+
+imshow(imfilter(slice, kernel))
+
+___________________________________
+
+Skrpta: calcGauss
+-> Vrne optimalno velikost Gaussovega filtra
+
+___________________________________
+
+Velikost filtra je odvisna od velikosti slike!!!
+--> Sigma naj bo arg
+npr. sigma = 0.03 (al 0.005) velikosti x
+
+Primer: doGauss.m
+
+___________________________________
+
+GLAJENJE SAMO PO X oz. Y SMERI
+kx = ones(1, 55)/55 -- v vsakem pixlu upoštevamo soseščino samo v x smeri
+kx = ones(55, 1)/55
+
+imshow(imfilter(slice, kx))

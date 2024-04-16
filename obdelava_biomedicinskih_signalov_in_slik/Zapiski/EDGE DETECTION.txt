@@ -1,0 +1,62 @@
+EDGE DETECTION
+
+LAPLACEOV OPERATOR
+Laplaceov kernel
+
+lap = [-1 -1 -1 ; -1 8 -1 ; -1 -1 -1]
+ali
+lap = [0 -1 0 ; -1 4 -1 ; 0 -1 0]
+
+fslice = imfilter(slice, lap)
+imshow(fslice, [])
+--> Hitro se da zgodit, da dobiš negativne vrednosti v izhodu, če ma kernel negativne vrednosti, zato dodaj []
+
+PROBLEM: Brain matter ima šum, ki ča mi nočemo upoštevat kot rob
+REŠITEV: 
+  1. Filtriraj z Gaussovim kernelom, potem zaznaj robove z Laplaceom
+  2. Združi kernela -- naredi njuno konvolucijo
+	Skripta: calcLoG(sigma)
+	Primer: doLoG (to je calcLoG)
+		doLoGImage
+
+fspecial boljši od calcLoG, ker je manj nazobčen
+
+_____________________________________
+
+To še vedno zazna mase kot robove
+
+>> UPORABI MARR-HILDRETHOV DETEKTOR IZ PREDAVANJ
+Algoritem opisan na str. 10
+2. točka - 4 primeri: al mata vodoravna pixla obraten predznak, al navpična, al diagonalna
+
+_____________________________________
+
+KAKO STANJŠATI ČRTE?...
+
+_____________________________________
+
+CANNY DETECTOR
+Izračunaš odvod v x in v y smeri
+G_x(x,y) = x(x, y) - x(x+1, y)
+
+Skripta: loopGradient.m -- potratno
+
+Boljše: kernelx = [1 -1]
+	kernely = [1; -1]
+Skripta: doMagnitudeAngle.m -- v vsaki točki izračuna magnitudo in kot odvoda
+				Pazi: labels are wrong: vertial je horizontal
+
+____________________________________
+
+Kako iz tega zaznati detektorja?
+
+Kako narediti izboljšavo?
+o = edge(slice) -- uporablja cannyja -- Temu se hočeš približat
+
+Vpelji metriko koliko je razlike v pixlih 
+
+___________________________________
+
+Simplest possible image
+-- >pogosta napaka v nonmaxima supression
+
