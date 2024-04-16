@@ -1,0 +1,17 @@
+#lang racket
+
+(struct int (int) #:transparent)
+(struct bool (b) #:transparent)
+(struct sestej (e1 e2) #:transparent)
+
+(define (fri e)
+  (cond [(int? e) e]  
+        [(bool? e) e]
+        [(add? e)
+         (let ([v1 (fri (sestej-e1 e))]
+               [v2 (fri (sestej-e2 e))])
+           (if (and (int? v1) (int? v2))
+               (konst (+ (int-int v1) (int-int v2)))
+               (if (and (bool? v1) (bool? v2))
+                   (or v1 v2)
+                   (error "seštevanec ni številka"))))]))

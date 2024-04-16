@@ -1,0 +1,8 @@
+#lang racket
+(define ones (cons 1 (lambda () ones)))
+
+(define naturals (letrec ([f (lambda (x) (cons x (lambda () (f (+ x 1)))))])
+                  (f 1)))
+
+(define fibs (letrec ([f (lambda (x y) (cons (x y) (lambda () f (+ x y))))])
+               (f (1 1))))

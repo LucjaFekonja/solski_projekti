@@ -1,0 +1,113 @@
+; Pretvorba v binarni zapis
+(define (binary n)
+  (let ([m (int-n (fri n null))])
+    (if (triggered? m) m
+        (define (binary-aux n)
+          (cond
+            [(> n 0) (add (binary-aux (int (quotient n 2))) (.. (int (modulo n 2)) (empty)))]
+            [(= n 0) (empty)]
+            [#t (triggered (excetion "binary: wrong argument type"))]))
+        (binary-aux m))))
+
+; Mapping
+(define (mapping f seq)
+  (let ((v (fri seq null)))
+    (if (triggered? v) v
+        (define (mapping-aux f seq)
+          (if (equal? (fri (?empty seq) null) (true))
+              (empty)
+              (add (.. (call f (list (..-e1 seq))) (empty)) (mapping f (..-e2 seq)))))
+        (mapping f v))))
+
+
+
+
+; Funkcije
+        [(fun? e)
+         (let ([name (fun-name e)]
+               [fargs (fun-farg e)]
+               [body (fun-body e)])
+           (if (check-duplicates fargs)
+               (triggered (exception "fun: duplicate argument identifier")) 
+               (closure env (fun name fargs body))))]
+       
+           ;(if (not (string=? name ""))
+           ;    (if (assoc name env)
+           ;        (triggered (exception "fun: duplicate argument identifier"))
+           ;        (set! closure-env (cons (cons name (closure closure-env e)) env)))
+           ;(closure closure-env e)))]
+
+        ; Procedure
+        [(proc? e) (closure env e)]
+         
+        ; Funkcijska ovojnica
+        [(closure? e)
+         (let* ([env (closure-env e)]
+                [f (closure-f e)])
+           (if (not (closed-env? env))
+               (triggered (exception "closure: undefined variable"))
+               (fri f env)))]
+
+        ; Funkcijski klic
+        [(call? e)
+         (let ([func (fri (call-e e) env)]
+               [args (call-args e)])
+           (cond
+             [(closure? func)
+              (let* ([f (closure-f func)]
+                     [name (fun-name f)]
+                     [fargs (fun-farg f)]
+                     [extended-env
+                      (if (check-duplicates (cons name fargs))
+                          (extend-environment fargs args env)
+                          (cons (cons name func) (extend-environment fargs args env)))])
+                (if (not (= (length fargs) (length args)))
+                    (triggered (exception "call: arity mismatch"))
+                    (fri (fun-body f) extended-env)))]
+             
+             [(proc? func)
+              (let* ([proc-body (proc-body func)]
+                     [proc-env (cons (cons (proc-name func) func) env)])
+                (fri proc-body proc-env))]
+
+             [#t (triggered (exception "call: wrong argument type"))]
+             ))]))
+
+
+
+
+(define-syntax-rule (mapping f seq)
+  (letrec ([map-helper
+            (lambda (f seq acc)
+              (cond [(empty? seq) (.. acc (empty))]
+                    [else (map-helper f (fri (..-e2 seq) null) (.. acc (fri (..-e1 seq) null)))]))])
+    (map-helper f seq (empty))))
+
+(define-syntax-rule (filtering f seq)
+  (let ((f-val (fri f null))  ; Evaluate the function expression
+        (seq-val (fri seq null)))  ; Evaluate the sequence expression
+    (if (not (and (?fun? f-val) (?seq? seq-val)))
+        (trigger (exception "filtering: wrong argument type"))
+        (letrec ([filter-helper
+                  (lambda (lst)
+                    (cond
+                      [(?empty? lst) empty]
+                      [(?..? lst)
+                       (let* ([head (fri (..-e1 lst) null)]
+                              [tail (fri (..-e2 lst) null)])
+                         (if (fri (call f-val (list head)) null)
+                             (.. head (filter-helper tail))
+                             (filter-helper tail)))]))])
+          (filter-helper seq-val)))))
+
+(define-syntax-rule (folding f init seq)
+  (letrec ([fold
+            (lambda (s acc)
+              (cond
+               [(empty? s) acc]
+               [(..? s)
+                (let ([head (fri (..-e1 s) null)]
+                      [tail (fri (..-e2 s) null)])
+                  (fold tail (fri (f (int acc) head) null)))]
+               [else (triggered (exception "folding: invalid sequence"))]))])
+    (fold seq init)))

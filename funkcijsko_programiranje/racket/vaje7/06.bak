@@ -1,0 +1,13 @@
+#lang racket
+
+(define (power base e)
+  (if (= e 0)
+  1
+  (* base (power base (- e 1)))))
+
+(define (gcd a b) (
+  if (= a b)
+  a
+  (if (> a b)
+      (gcd (- a b) b)
+      (gcd a (- b a)))))

@@ -1,0 +1,133 @@
+(* --------------------- POMOŽNE --------------------- *)
+ fun reduce v matrix = List.map (fn x :: u => Vec.sub u (Vec.scale x v) | _ => raise Empty) matrix;
+
+  fun pivot ([], _) = NONE
+  |   pivot (v as x :: _, matrix) = 
+        case R.inv x of 
+            SOME x' => SOME ((Vec.scale x' v) :: matrix)
+          | NONE =>
+              case matrix of
+                  [] => NONE
+                | (u as y :: _) :: matrix =>
+                      let
+                        val (_, s, t) = R.xGCD (x, y)
+                      in 
+                        case pivot (Vec.add (Vec.scale s v) (Vec.scale t u), matrix) of
+                            SOME (w :: matrix) => SOME (w :: v :: u :: matrix)
+                          | _ => NONE
+                      end;
+
+  fun gauss (above, []) = SOME above
+  |   gauss (above, v :: below) = 
+          case pivot (v, below) of
+              NONE => NONE
+          |   SOME ((_ :: v') :: below') => gauss (reduce v' above @ [v'], List.filter (fn x => not (List.all (fn y => y = R.zero) x)) (reduce v' below'));
+
+fun inv A = if List.length A = List.length (hd A) then gauss ([], join A (id (List.length A))) else NONE
+
+
+
+
+(* VAJE *)
+(* Besedilo razdelimo na bloke, odvisne od dolžine ključa. No saj veš kak deluje Hillova šifra *)
+(* Inverz a obstaja, če a nima skupnega faktorja z n *)
+
+
+(* ---------------------  1. NALOGA  --------------------- *)
+
+fun split n sez = 
+(* ! Prepiši v linearnem času. POMOČ: List.splitend ! *)
+
+
+(* ---------------------  2. NALOGA  --------------------- *)
+
+(* Define Rings *)
+(* ! Modul = poimenovan del koda ! 
+   ! Funktor = sprejme nek drug modul in zgradi nov modul !  več naslednjič *)
+
+(* ! Sprejme modul za aritmetiko in z njegovo pomočjo definira nove funkcije ! *)
+functor Mat (R : RING) :> MAT where type t = R.t = ...
+
+
+
+(* ! Pomožne za inv ! *)
+
+(* v oblike 1 :: v *)
+fun reduce v m = List.map (fn x :: u => Vec.sub u (Vec.scale x (List.drop (v, 1))) | _ => raise Empty) m
+                        (* fn razdeli vec na glavo in rep *)
+
+
+(* Razdelimo m na 1. vrstico v in ostalo m *)
+(* Poiščemo vrstico, ki ima obrnljiv el., jo damo v 1. vrstico in množimo z inverzom *)
+(* To ne bo delovalo vedno. Boljše: obstaja lin. kombinacija vseh vrstic, da dobimo vektor, 
+   ki se začne z 1 (s pomočjo xGCD in množenjem vrstic s s in t *)
+
+fun pivot (v, m) = case (v, m) of
+  ([], _) => NONE |
+  (v as x :: _, m) => case R.inv x of 
+    SOME x' => SOME (Vec.scale x' v :: m) |
+    (* V 1. vr nismo mogli nič naredit, lahko pa da se da v preostalem delu kaj naredili *)
+    NONE => case m of 
+      [] => NONE |
+      (u as y :: _) :: m => 
+        let 
+        val (_, s, t) = R.xGCD (x, y)
+        in
+        case pivot (Vec.add (Vec.scale s v ) (Vec.scale t u), m) of
+          (* Če nekaj dobim, mora ta matrika imet vsaj nekaj na začetku *)
+          SOME (w :: m) => SOME (w :: v :: u :: m) |
+          _ => NONE
+        end
+
+
+  fun gauss (above, []) = SOME above |
+      gauss (above, v :: below) = case pivot (v, below) of
+        NONE => NONE |
+        SOME ((_ :: v) :: m) => 
+          gauss (reduce v (above @ [v]), List.filter (fn v => not (List.all (fn x => x = R.zero) v)) (reduce v m))
+
+
+
+  (* ! Ali je obrnljiva? Če ni, prideš do točke, ko ne moreš nadaljevat (vrneš none, drugače some) ! *)
+  (* Gaussova eliminacija: Dodaj I na desno od A. Ta mat ima v prvem stolpcu neke vrednosti. 
+    Če je na mestu (1, 1) 0, ne moreš z ničemer množit, zato moraš poiskat neničeln element v stolpcu. 
+    Če ni (recimo, da je x), množiš 1. vrstico z inverzom od x. Ampak še vedno ni nujno, da ima x inverz.
+
+    NAIVNA STRATEGIJA : Čez cel stolpec in pogledamo, če je kateri, ki ima inverz -> zamenjaš vrstice -> 
+                        Izračunaš inverz elementa -> Množiš vrstico -> Dobiš ena -> Odšteješ y-kratnik od vsake od spodnjih (IN ZGORNJIH) vrstic. 
+                        Zdaj lahko poljubno uporabljaš sponje vsetice, ker ne boš uničil s tem 1. stolpca.
+                        Ponoviš na podmatriki brez 1. stolpca
+
+    (Lahko se zgodi, da ni elementa z inverznom, pa vseeno obstaja inverz).
+    
+    NAPIŠI PRAVILNE POMOŽNE FUNKCIJE
+    Imamo mat in vec => matriko lahko z vektorjem reduciramo. Lahko predpostaviš, da je vec = 1 :: rest. 
+    Množiš z vrednostjo v matriki in odšteješ vektor.
+  ! *)
+
+  fun inv A = raise NotImplemented
+
+
+
+(* ---------------------  3. NALOGA  --------------------- *)
+
+(* ! Iz plaintexta in cipertexta poišče ključ ! *)
+  (* Samo sledi korakom na učilnici *)
+  (* IDEJA : Besedilo in kod razdeliš na bloke in po delih rešuješ linearni sistem *)
+  fun knownPlaintextAttack keyLenght plaintext ciphertext = raise NotImplemented
+
+
+
+
+(* ---------------------  4. NALOGA  --------------------- *)
+(* ! Način kako hranimo besede v slovarju ! *)
+(* Vsako vozlišče ima poljubno število otrok *)
+structure Trie (* za test briši od tu *):> 
+sig
+  eqtype ''a dict
+  val empty : ''a dict
+  val insert : ''a list -> ''a dict -> ''a dict
+  val lookup : ''a list -> ''a dict -> bool
+end (* za test briši do tu *)
+=
+struct

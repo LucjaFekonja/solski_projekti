@@ -1,0 +1,622 @@
+#lang racket
+
+(provide false true int .. empty exception
+         trigger triggered handle
+         if-then-else
+         ?int ?bool ?.. ?seq ?empty ?exception
+         add mul ?leq ?= head tail ~ ?all ?any
+         vars valof fun proc closure call
+         greater rev 
+         fri)
+
+(define fri-context #f)
+(struct read () #:transparent)
+
+; Podatkovni tipi
+(struct int (n) #:transparent)
+(struct true () #:transparent)
+(struct false () #:transparent)
+(struct .. (e1 e2) #:transparent)
+(struct empty () #:transparent)
+(struct exception (exn) #:transparent)
+
+; Nadzor toka
+(struct trigger (exception) #:transparent)
+(struct triggered (exception) #:transparent)
+(struct handle (e1 e2 e3) #:transparent)
+(struct if-then-else (condition e1 e2) #:transparent)
+(struct ?int (e) #:transparent)
+(struct ?bool (e) #:transparent)
+(struct ?.. (e) #:transparent)
+(struct ?seq (e) #:transparent)
+(struct ?empty (e) #:transparent)
+(struct ?exception (e) #:transparent)
+(struct add (e1 e2) #:transparent)
+(struct mul (e1 e2) #:transparent)
+(struct ?leq (e1 e2) #:transparent)
+(struct ?= (e1 e2) #:transparent)
+(struct head (e) #:transparent)
+(struct tail (e) #:transparent)
+(struct ~ (e) #:transparent)
+(struct ?all (e) #:transparent)
+(struct ?any (e) #:transparent)
+
+; Spremenljivke
+(struct vars (s e1 e2) #:transparent)
+(struct valof (s) #:transparent)
+
+; Funkcije
+(struct fun (name farg body) #:transparent)
+(struct proc (name body) #:transparent)
+(struct closure (env f) #:transparent)
+(struct call (e args) #:transparent)
+
+; FRIntrepreter
+(define (fri e env)
+  (cond [(int? e)
+         (if (number? (int-n e))
+             e
+             (let ((v (fri (int-n e) env)))
+               (if (triggered? v)
+                   v
+                   (fri (int-n e) env))))] 
+        [(true? e) e]
+        [(false? e) e]
+        [(..? e)
+         (let ((v1 (fri (..-e1 e) env)))
+               (if (triggered? v1)
+                   v1
+                   (let ((v2 (fri (..-e2 e) env)))
+                     (if (triggered? v2)
+                         v2
+                         (.. v1 v2)))))]
+        [(empty? e) e]
+        [(exception? e) e]
+
+        ; Proženje izjem
+        [(trigger? e)
+         (let ((v (fri (trigger-exception e) env))) 
+           (cond [(triggered? v) v]
+                 [(exception? v) (triggered v)]
+                 [#t (triggered (exception "trigger: wrong argument type"))]))]
+
+        ; Lovljenje izjem
+        [(handle? e)
+         (let ((v1 (fri (handle-e1 e) env)))
+           (cond [(triggered? v1) v1]
+                 [(not (exception? v1)) (triggered (exception "handle: wrong argument type"))]
+                 [#t (let ((v2 (fri (handle-e2 e) env)))
+                       (cond 
+                         [(and (triggered? v2) (exception? v1) (equal? v1 (triggered-exception v2))) (fri (handle-e3 e) env)]
+                         [#t v2]))]))]
+
+        ; Vejitev
+        [(if-then-else? e)
+         (let ([c (fri (if-then-else-condition e) env)])
+           (cond [(triggered? c) c]
+                 [(equal? c (false)) (fri (if-then-else-e2 e) env)]
+                 [#t (fri (if-then-else-e1 e) env)]))]
+
+        ; Preverjanje tipov
+        [(?int? e)
+         (let ((v (fri (?int-e e) env)))
+           (cond [(triggered? v) v]
+                 [(int? v) (true)]
+                 [#t (false)]))]
+        [(?bool? e)
+         (let ((v (fri (?bool-e e) env)))
+           (cond [(triggered? v) v]
+                 [(or (true? v) (false? v)) (true)]
+                 [#t (false)]))]
+        [(?..? e)
+         (let ((v (fri (?..-e e) env)))
+           (cond [(triggered? v) v]
+                 [(..? v) (true)]
+                 [#t (false)]))]
+        [(?seq? e) 
+         (let ((v (fri (?seq-e e) env)))
+           (cond [(triggered? v) v]
+                 [(empty? v) (true)]
+                 [(not (..? v)) (false)]
+                 [(empty? (fri (..-e2 v) env)) (true)]
+                 [#t (fri (?seq (fri (..-e2 v) env)) null)]))]
+        [(?empty? e) 
+         (let ((v (fri (?empty-e e) env)))
+           (cond [(triggered? v) v]
+                 [(empty? v) (true)]
+                 [#t (false)]))]
+        [(?exception? e)
+         (let ((v (fri (?exception-e e) env)))
+           (cond [(triggered? v) v]
+                 [(exception? v) (true)]
+                 [#t (false)]))]
+
+        ; Seštevanje
+        [(add? e)
+         (let ((v1 (fri (add-e1 e) env)))
+           (if (triggered? v1)
+               v1
+               (let ((v2 (fri (add-e2 e) env)))
+                 (cond [(triggered? v2) v2]
+                       [(and (int? v1) (int? v2)) (int (+ (int-n v1) (int-n v2)))]
+                       [(and (equal? (fri (?bool v1) env) (true))
+                             (equal? (fri (?bool v2) env) (true)))
+                        (if (or (true? v1) (true? v2))
+                            (true)
+                            (false))]
+                       [(and(equal? (fri (?seq v1) env) (true))
+                            (equal? (fri (?seq v2) env) (true)))
+                        (if (empty? v1)
+                            v2
+                            (let ((head (..-e1 v1))
+                                  (tail (..-e2 v1)))
+                              (if (empty? tail)
+                                  (.. head v2)
+                                  (.. head (fri (add tail v2) env)))))]
+                       [#t (triggered (exception "add: wrong argument type"))]
+                       ))))]
+
+        ; Množenje
+        [(mul? e)
+         (let ((v1 (fri (mul-e1 e) env)))
+           (if (triggered? v1)
+               v1
+               (let ((v2 (fri (mul-e2 e) env)))
+                 (cond [(triggered? v2) v2]
+                       [(and (int? v1) (int? v2)) (int (* (int-n v1) (int-n v2)))]
+                       [(and (equal? (fri (?bool v1) env) (true))
+                             (equal? (fri (?bool v2) env) (true)))
+                        (if (and (true? v1) (true? v2))
+                            (true)
+                            (false))]
+                       [#t (triggered (exception "mul: wrong argument type"))]
+                       ))))]
+
+        ; Primerjanje
+        [(?leq? e)
+         (let ((v1 (fri (?leq-e1 e) env)))
+           (if (triggered? v1)
+               v1
+               (let ((v2 (fri (?leq-e2 e) env)))
+                 (cond [(triggered? v2) v2]
+                       [(and (int? v1) (int? v2))
+                        (if (<= (int-n v1) (int-n v2)) (true) (false))]
+                       
+                       [(and (equal? (fri (?bool v1) env) (true))
+                             (equal? (fri (?bool v2) env) (true)))
+                        (cond [(equal? v1 (false)) (true)]
+                              [(equal? v2 (true)) (true)]
+                              [(equal? v2 (false)) (false)])]
+                       
+                       [(and (equal? (fri (?seq v1) env) (true))
+                             (equal? (fri (?seq v2) env) (true)))
+                        (if (empty? v1)
+                            (true)
+                            (if (empty? v2)
+                                (false)
+                                (let ((tail1 (..-e2 v1))
+                                      (tail2 (..-e2 v2)))
+                                  (fri (?leq tail1 tail2) env))))]
+                       [#t (triggered (exception "?leq: wrong argument type"))]
+                       ))))]
+
+        ; Ujemanje
+        [(?=? e)
+         (let ((v1 (fri (?=-e1 e) env)))
+           (if (triggered? v1)
+               v1
+               (let ((v2 (fri (?=-e2 e) env)))
+                 (if (triggered? v2)
+                     v2
+                     (if (equal? v1 v2) (true) (false))))))]
+
+        ; Ekstrakcija
+        [(head? e)
+         (let ((v (fri (head-e e) env)))
+           (cond [(triggered? v) v]
+                 [(empty? v) (triggered (exception "head: empty sequence"))]
+                 [(..? v) (..-e1 v)]
+                 [#t (triggered (exception "head: wrong argument type"))]))]
+        [(tail? e)
+         (let ((v (fri (tail-e e) env)))
+           (cond [(triggered? v) v]
+                 [(empty? v) (triggered (exception "tail: empty sequence"))]
+                 [(..? v) (..-e2 v)]
+                 [#t (triggered (exception "tail: wrong argument type"))]))]
+
+        ; Nasprotna vrednost 
+        [(~? e)
+         (let ((v (fri (~-e e) env)))
+           (cond [(triggered? v) v]
+                 [(int? v) (int (- (int-n v)))]
+                 [(true? v) (false)]
+                 [(false? v) (true)]
+                 [#t (triggered (exception "~: wrong argument type"))]))]
+
+        ; All
+        [(?all? e)
+         (let ((v (fri (?all-e e) env)))
+           (cond [(triggered? v) v]
+                 [(equal? (fri (?seq v) env) (false)) (triggered (exception "?all: wrong argument type"))]
+                 [(empty? v) (true)]
+                 [(equal? (fri (head v) env) (false)) (false)]
+                 [#t (fri (?all (tail v)) env)]))]
+
+        ; Any
+        [(?any? e)
+         (let ((v (fri (?any-e e) env)))
+           (cond [(triggered? v) v]
+                 [(equal? (fri (?seq v) env) (false)) (triggered (exception "?any: wrong argument type"))]
+                 [(empty? v) (false)]
+                 [(not (equal? (fri (head v) env) (false))) (true)]
+                 [#t (fri (?any (tail v)) env)]))]
+
+        ; Lokalno okolje
+        [(vars? e)
+         (let* ([s (vars-s e)]
+                [e1 (vars-e1 e)]
+                [e2 (vars-e2 e)])
+           (if
+            (and (list? s) (list? e1))
+            
+            (if (check-duplicates s)
+                (triggered (exception "vars: duplicate identifier"))
+                (let ((new-env (extend-env s e1 env env)))
+                  (if (triggered? new-env)
+                      new-env
+                      (fri e2 new-env))))
+
+             (let ((v1 (fri e1 env)))
+               (if (triggered? v1)
+                   v1
+                   (fri e2 (cons (cons s v1) env))))))]
+  
+
+                  
+            ;      (fri e2 (cons (cons (car s) (fri (car e1) env)) env)))]
+            ; [(and (list? s) (list? e1))
+            ;  (if (member (car s) (cdr s))
+            ;      (triggered (exception "vars: duplicate identifier"))
+            ;      (fri (vars (cdr s) (cdr e1) e2) (extend-environment s e1 env)))]
+       
+        [(valof? e)
+         (let* ([s (valof-s e)]
+                [var-value (lookup-variable-value s env)])
+           (cond [(exception? var-value) (triggered var-value)]
+                 [(triggered? var-value) var-value]
+                 [#t var-value]))]
+
+        [(fun? e)
+         (let ((name (fun-name e))
+               (farg (fun-farg e))
+               (body (fun-body e)))
+           (cond [(triggered? body) body]
+                 [(check-duplicates farg) (triggered (exception "fun: duplicate argument identifier"))]
+                 [(missing-variable (cons (cons name body) env) farg body) (triggered (exception "closure: undefined variable"))]
+                 [#t (closure env (fun name farg body))]))]
+        
+        [(proc? e)
+         (let ((name (fun-name e))
+               (body (fun-body e)))
+           (cond [(triggered? body) body]
+                 [(missing-variable (cons (cons name body) env) '() body) (triggered (exception "closure: undefined variable"))]
+                 [#t e]))]
+        
+        [(call? e)
+         (let ([func (fri (call-e e) env)]
+               [args (call-args e)])
+           (cond
+             [(triggered? func) func]
+             
+             [(closure? func)
+              (let* ([f (closure-f func)]
+                     [env-closure (closure-env func)]
+                     [name (fun-name f)]
+                     [fargs (fun-farg f)]
+                     [body (fun-body f)])
+                     ; [extended-env
+                     ;  (append (extend-environment fargs args env) (list (cons name func)))])
+                      ;(if (check-duplicates (cons name fargs))
+                      ;    (extend-environment fargs args env)
+                      ;    (cons (cons name func) (extend-environment fargs args env)))])
+                (cond [(not (= (length fargs) (length args))) (triggered (exception "call: arity mismatch"))]
+                      [(equal? name "") (fri (vars fargs args body) env-closure)]
+                      [#t (fri (vars (append fargs (list name)) (append args (list f)) body) env-closure)]))]
+
+             [(proc? func)
+              (let ((name (proc-name func))
+                    (body (proc-body func)))
+                (cond [(not (= (length args) 0)) (triggered (exception "call: arity mismatch"))]
+                      [(equal? name "") (fri body env)]
+                      [#t (fri (vars name func body) env)]))]
+                  
+                  ;(let* ([name (proc-name func)]
+                  ;       [body (proc-body func)]
+                  ;       [extended-env (cons (cons name func) env)])
+                  ;  (fri body extended-env)))]
+
+             [#t (triggered (exception "call: wrong argument type"))]))]
+
+        [(read? e) env]
+        ))
+ 
+
+; Pomožne funkcije za vars in valof
+(define (lookup-variable-value var env)
+  (cond
+    [(null? env) (exception "valof: undefined variable")]
+    [(eq? (caar env) var) (cdar env)]
+    [else (lookup-variable-value var (cdr env))]))
+
+; Pomožne funkcije za funkcije
+(define (missing-variable env var body)
+  (let ((allvar (append (get-first-elements env) var)))
+    (cond [(trigger? body) #f]
+          [(exception? body) #f]
+          [(valof? body) (not (member (valof-s body) allvar))]
+          [(vars? body)
+           (let ([s (vars-s body)]
+                 [e1 (vars-e1 body)]
+                 [e2 (vars-e2 body)])
+                     
+           (if (list? s) 
+             (missing-variable (extend-env s e1 env env) var e2)
+             (missing-variable (extend-env (list s) (list e1) env env) var e2)))]
+          [(int? body) #f]
+          [(true? body) #f]
+          [(false? body) #f]
+          [(empty? body) #f]
+          [(read? body) #f]
+          [(..? body) (or (missing-variable env var (..-e1 body)) (missing-variable env var (..-e2 body)))]
+          [(handle? body) (or (missing-variable env var (handle-e1 body)) (missing-variable env var (handle-e2 body)) (missing-variable env var (handle-e3 body)))]
+          [(if-then-else? body) (or (missing-variable env var (if-then-else-condition body)) (missing-variable env var (if-then-else-e1 body)) (missing-variable env var (if-then-else-e2 body)))]
+          [(?int? body) (missing-variable env var (?int-e body))]
+          [(?bool? body) (missing-variable env var (?bool-e body))]
+          [(?..? body) (missing-variable env var (?..-e body))]
+          [(?seq? body) (missing-variable env var (?seq-e body))]
+          [(?empty? body) (missing-variable env var (?empty-e body))]
+          [(?exception? body) (missing-variable env var (?exception-e body))]
+          [(add? body) (or (missing-variable env var (add-e1 body)) (missing-variable env var (add-e2 body)))]
+          [(mul? body) (or (missing-variable env var (mul-e1 body)) (missing-variable env var (mul-e2 body)))]
+          [(?leq? body) (or (missing-variable env var (?leq-e1 body)) (missing-variable env var (?leq-e2 body)))]
+          [(?=? body) (or (missing-variable env var (?=-e1 body)) (missing-variable env var (?=-e2 body)))]
+          [(head? body) (missing-variable env var (head-e body))]
+          [(tail? body) (missing-variable env var (tail-e body))]
+          [(~? body) (missing-variable env var (~-e body))]
+          [(?all? body) (missing-variable env var (?all-e body))]
+          [(?any? body) (missing-variable env var (?any-e body))])))
+
+(define (get-first-elements pairs)
+  (map (lambda (pair) (car pair)) pairs))
+
+
+;(define (copy-environment env)
+;  (map (lambda (binding) (cons (car binding) (cdr binding))) env))
+
+(define (extend-env vars vals env new)
+  (if (null? vars)
+      new
+      (let ((v (fri (car vals) env)))
+              (cond [(triggered? v) v]
+                    [#t (let ([new-env (append new (list (cons (car vars) v)))])
+                          (extend-env (cdr vars) (cdr vals) env new-env))]))))
+
+(define (input-vals env body)
+  (cond [(trigger? body) body]
+        [(exception? body) body]
+        [(valof? body) (if (member (valof-s body) (get-first-elements env))
+                           (fri body env)
+                           body)]
+        [(int? body) body]
+        [(true? body) body]
+        [(false? body) body]
+        [(empty? body) body]
+        [(..? body) (.. (input-vals env (..-e1 body)) (input-vals env (..-e2 body)))]
+        [(handle? body) (handle (input-vals env (handle-e1 body)) (input-vals env (handle-e2 body)) (input-vals env (handle-e3 body)))]
+        [(if-then-else? body) (if-then-else (input-vals env (if-then-else-condition body)) (input-vals env (if-then-else-e1 body)) (input-vals env (if-then-else-e2 body)))]
+        [(?int? body) (?int (input-vals env (?int-e body)))]
+        [(?bool? body) (?bool (input-vals env (?bool-e body)))]
+        [(?..? body) (?.. (input-vals env (?..-e body)))]
+        [(?seq? body) (?seq (input-vals env (?seq-e body)))]
+        [(?empty? body) (?empty (input-vals env (?empty-e body)))]
+        [(?exception? body) (?exception (input-vals env (?exception-e body)))]
+        [(add? body) (add (input-vals env (add-e1 body)) (input-vals env (add-e2 body)))]
+        [(mul? body) (mul (input-vals env (mul-e1 body)) (input-vals env (mul-e2 body)))]
+        [(?leq? body) (?leq (input-vals env (?leq-e1 body)) (input-vals env (?leq-e2 body)))]
+        [(?=? body) (?= (input-vals env (?=-e1 body)) (input-vals env (?=-e2 body)))]
+        [(head? body) (head (input-vals env (head-e body)))]
+        [(tail? body) (tail (input-vals env (tail-e body)))]
+        [(~? body) (~ (input-vals env (~-e body)))]
+        [(?all? body) (?all (input-vals env (?all-e body)))]
+        [(?any? body) (?any (input-vals env (?any-e body)))]))
+
+
+            
+
+(define (extend-environment vars vals env)
+  (if (null? vars)
+      env
+      (let ([new-env (cons (cons (car vars) (fri (car vals) env)) env)])
+        (extend-environment (cdr vars) (cdr vals) new-env))))
+
+(define (lookup-closure-variable-value var env)
+  (cond
+    [(null? env) (exception "closure: undefined variable")]
+    [(eq? (caar env) var) (cdar env)]
+    [else (lookup-closure-variable-value var (cdr env))]))
+
+(define (closed-env? env)
+  (and (list? env)
+       (for-each (lambda (x) (and (symbol? (car x)) (not (eq? (cdr x) 'unbound))))
+              env)))
+
+
+; #########################################################
+; ########################  MAKRO #########################
+; #########################################################
+
+; Večji
+(define (greater e1 e2)
+  (?leq e1 e2))
+
+; Obrni
+(define (rev seq)
+  (let ((v (fri seq null)))
+    (if (triggered? v)
+        v
+        (letrec ((rev-aux
+                  (lambda (seq)
+                    (if (equal? (fri (?empty seq) null) (true))
+                        (empty)
+                        (add (rev-aux (..-e2 seq)) (.. (..-e1 seq) (empty)))))))
+          (rev-aux v)))))
+
+; Binary
+(define (binary n)
+  (let ((m (int-n (fri n null))))
+    (if (triggered? m)
+        m
+        (letrec ((binary-aux
+                  (lambda (n)
+                    (cond
+                      [(> n 0) (append (binary-aux (quotient n 2)) (list (modulo n 2)))]
+                      [(= n 0) (list)]
+                      [else (triggered (exception "binary: wrong argument type"))]))))
+          (to-int-list (binary-aux m))))))
+
+; Mapping
+(define (mapping f seq)
+  (let ((v (fri seq null)))
+    (if (triggered? v)
+        v
+        (letrec ((mapping-aux
+                  (lambda (f seq)
+                    (if (equal? (fri (?empty seq) null) (true))
+                        (empty)
+                        (add (.. (call f (list (..-e1 seq))) (empty)) (mapping-aux f (..-e2 seq)))))))
+          (mapping-aux f v)))))
+
+; Filtering 
+(define (filtering f seq)
+  (let ((v (fri seq null)))
+    (if (triggered? v)
+        v
+        (letrec ((filtering-aux
+                  (lambda (f seq)
+                    (if (equal? (fri (?empty seq) null) (true))
+                        (empty)
+                        (if (equal? (fri (call f (list (..-e1 seq))) null) (true))
+                            (add (.. (..-e1 seq) (empty)) (filtering-aux f (..-e2 seq)))
+                            (filtering-aux f (..-e2 seq)))))))
+          (filtering-aux f v)))))
+ 
+; Folding  
+(define (folding f init seq)
+  (let ((v (fri seq null)))
+    (if (triggered? v)
+        v
+        (letrec ((folding-aux
+                  (lambda (f init seq)
+                   (if (equal? (fri (?empty seq) null) (true))
+                        init
+                        (folding-aux f (fri (call f (list (..-e1 seq) init)) null) (..-e2 seq))))))
+          (folding-aux f init v)))))
+
+; Pomožne funkcije za makro
+(define (to-rkt-list seq)
+  (cond [(empty? seq) (list)]
+        [#t (append (list (..-e1 seq)) (to-rkt-list (..-e2 seq)))]))
+
+(define (to-int-list l)
+  (if (null? l)
+      (empty)
+      (.. (int (car l)) (to-int-list (cdr l)))))
+        
+
+
+(require rackunit)
+(require rackunit/text-ui)
+
+(define all-tests
+  (test-suite
+   "pulic"
+
+   (test-case
+    "head 01"
+    (check-equal?
+     (fri (head (.. (add (.. (empty) (.. (empty) (empty)))
+                         (empty))
+                    (empty))) null)
+     (.. (empty) (.. (empty) (empty)))))
+
+   (test-case
+    "head 02"
+    (check-equal?
+     (fri (head (head (.. (int 1) (false)))) null)
+     (triggered (exception "head: wrong argument type"))))
+
+   (test-case
+    "tail 01"
+    (check-equal?
+     (fri (tail (.. (int 4) (int 9))) null)
+     (int 9)))
+
+   (test-case
+    "tail 02"
+    (check-equal?
+     (fri (tail (.. (int 4) (empty))) null)
+     (empty)))
+    
+   (test-case
+    "tail 03"
+    (check-equal? (fri (tail (empty)) null)
+                  (triggered (exception "tail: empty sequence"))))
+
+   (test-case
+    "tail 04"
+    (check-equal? (fri (tail (int 1)) null)
+                  (triggered (exception "tail: wrong argument type"))))
+ 
+   (test-case
+    "vars 01"
+    (check-equal?
+     (fri (vars "a" (add (mul (int 1) (int 2)) (mul (int -3) (int 4)))
+                (mul (valof "a") (valof "a"))) null)
+     (int 100)))
+    
+   (test-case
+    "vars 02"
+    (check-equal?
+     (fri (vars (list "a" "b")
+                (list (mul (mul (int 1) (int 2)) (mul (int -3) (int 4)))
+                      (~ (add (mul (int 1) (int 2)) (mul (int -3) (int 4)))))
+                (add (valof "a") (valof "b"))) null)
+     (int -14)))
+
+   (test-case
+    "vars 03"
+    (check-equal?
+     (fri (vars (list "s1" "s2" "s3")
+                (list (.. (false) (true))
+                      (.. (int 1) (int 2))
+                      (.. (int 4) (int 4)))
+                (mul (valof "s1") (mul (valof "s2") (valof "s3")))) null)
+     (triggered (exception "mul: wrong argument type"))))
+    
+   (test-case
+    "vars list 01"
+    (check-equal?
+     (fri (vars (list "a" "b" "c")
+                (list (int 1) (int 2) (int 3))
+                (fun "linear" (list "x1" "x2" "x3")
+                     (add (mul (valof "a") (valof "x1"))
+                          (add (mul (valof "b") (valof "x2"))
+                               (mul (valof "c") (valof "x3")))))) null)
+     (closure (list (cons "a" (int 1))(cons "b" (int 2)) (cons "c" (int 3)))
+              (fun "linear" '("x1" "x2" "x3")
+                   (add (mul (valof "a") (valof "x1"))
+                        (add (mul (valof "b") (valof "x2"))
+                             (mul (valof "c") (valof "x3"))))))))
+
+
+))
