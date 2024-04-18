@@ -1,4 +1,4 @@
-function poly = find_alpha(p, q)
+function alpha = find_alpha(p, q)
 % Find such alpha that p-aq has a non-negative real zero
 
 n = length(p);
@@ -12,10 +12,5 @@ else
     poly = @(a) p - a * q;
 end
 
-
-for a = 0:1e-7:1
-    if max(roots(poly(a))) > 0
-        a
-        break;
-    end
-end
+f = @(a) max(roots(poly(a)));
+alpha = fzero(f, 10);             % Izberi približek!
