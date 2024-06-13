@@ -1,0 +1,67 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts} 
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[slovene]{babel}
+
+\newtheorem{lema}{Lema}
+\newtheorem{izrek}{Izrek}
+\newtheorem{dokaz}{Dokaz}
+\newtheorem{definicija}{Definicija}
+
+\title{Karakteristike Voronijevega diagrama}
+
+\begin{document}
+
+Od zdaj naprej naj $K$ označuje konveksen lik v $\mathbb{R}^2$ in naj bo $S$ množica točk, imenovanih \textit{mesta}, v $K$.
+Za $p \in S$ je \textit{Voronijeva celica} $$V_S (p) = \{ q \in K \quad | \quad \forall p \in S \setminus \{ p \}. \quad H_K (q, p) \leq H_K (q, p') \} \text{.}$$
+Voronijeve celice so \textit{zvezdaste oblike} glede na njihova mesta $p$, to pomeni, da za vsako točko $q \in V_S(p)$ daljica $pq$ v celoti leži v $V_S(p)$. 
+\textit{Voronijev diagram} v Hilbertovi metriki glede na lik $K$ je terica celic $Vor_K (S) = (V_S (p))_{p \in S} \text{.}$
+
+Točka, ki ločuje eno Voronojevo celico od druge, je enako oddaljena od obeh mest, ki definirata celici. Take točke ležijo na t.i. \textit{simetrali}.
+\begin{definicija}
+    \textit{$(p, p')$-bisektor} je množica točk $$\{ z \in K \quad | \quad H_K (z,p) = H_K (z,p') \} \text{,}$$ kjer sta $p, p' \in S$ mesti.
+\end{definicija}
+
+% Točke, ki so enako oddaljene od mest $p$ in $p'$ predstavljano \textit{$(p, p')$-bisektor}. To je torej množica točk $$\{ z \in K \quad | \quad H_K (z,p) = H_K (z,p') \} \text{.}$$
+% Kdaj z leži na bisektorju?
+% Bisektor je sestavljen iz večih delov racionalnih parametričnih funkcij omejene stopnje.
+Označimo vožlišča $m$-kotnika z $\{ v_1 \dots v_m \}$. Potem za $p \in S$ obstaja $m$ tetiv $\chi (v_i, p)$, ki celico razdelijo na $2m$ trikotnikov, imenovanih \textit{sektorji}.
+\textit{Daljice $(p, p')$-bisektorja} so robovi sektorjev, ki ležijo na $(p, p')$-bisektorju.
+
+Ko se premikamo vzdolž bisektorja opazimo do $2m$ sektorjev celice z mestom $p$ v ciklični redu, in do $2m$ sektorjev celice z mestom $p'$ v obratnem cikličnem redu. Bisektor je torej sestavljen iz največ $4m$ segmentov.
+
+% \begin{lema}
+%     Za dani konveksni $m$-kotnik $K$ in mesti $p, p' \in \int (K)$ je $(p, p')$-bisektor povezana krivulja sestavljena iz največ $4m$ segmentov bisektorja.
+% \end{lema}
+
+Presek dveh Voronijevih celic je del bisektorja, imenovan \textit{Voronoijev rob}. \textit{Voronoijevo vozlišče} je presek dveh robov.
+Ker je Voronijev diagram planarni, z direktno aplikcijo Eulerjeve formule dobimo naslednjo lemo.
+
+\begin{lema}
+    Za dani konveksni $m$-kotnik $K \subset \mathbb{R}^2$ in $n$ mest $S \subset K$, ima Voronijev diagram $n$ celic, kvečemu $3n$ Voronijevih robov, in kvečemu $2n$ Voronijevih vozlišč.
+    Vsak Voronijev rob sestoji iz največ $4m$ segmentov bisektorja, torej ima celoten diagram kombinatorično kompleksnost $\mathcal{O} (mn)$.
+\end{lema}
+
+Za konstrukcijo Voronijevega diagrama je potrebno najti bisektorje. Naj bo $z$ točka na $(p, p')$-bisektorju, $e$ in $f$ robova $K$, ki se ju dotika tetiva $\chi (z, p)$ in simetrično za $e'$ in $f'$.
+Izkaže se, da lahko bisektor parametriziramo s $p, p', e, e', f$ in $f'$, vendar lahko parametrizacjo prevedemo na enodimenzionalno. 
+
+Naj bo $a$ presek nosilk robov $e$ in $f$ in naj bo $a'$ presek nosilk robov $e'$ in $f'$. Če je $a = a'$ je bisektor ravna crta skozi $a$. Denimo torej, da $a \neq a'$. 
+Naj bo $l$ premica skozi $p$ in $p'$. Definirajmo točki $x$ in $y$ kot presek med $l$ in nosilko robov $e$ oziroma $f$. Podobno definiramo $x'$ in $y'$ za $e'$ in $f'$.
+Ta projekcija ohrani dvorazmerje in s tem tudi Hilbertove razdalje.
+Naj bo $o$ točka na $l$, da velja enakost dvorazmerji $(o, p; y, x) = (o, p'; y', x')$. Točka $o$ mora ležati med $p$ in $p'$.
+Definirajmo še $\alpha$ tako, da je $o + \alpha$ točka na $l$, v kateri premica skozi $z$ in $a$ seka $l$. Analogno definirajmo $\alpha'$. 
+% Izkaže se, da se ohrani enakost dvorazmerij $(o + \alpha, p; y, x) = (o + \alpha', p'; y', x')$. 
+Po zgornji konstrukciji lahko vsako točko bisektorja opišemo s parom $(\alpha, \alpha')$.
+Še več, $\alpha$ in $\alpha'$ sta odvisni po naslednji lemi.
+
+\begin{lema}
+    Naj bo $K$ konveksen večkotnik in $p$ in $p'$ mesti v notranjosti $K$.
+    Vsaka točka na $(p, p')$-bisektorju je lahko opisana z $\alpha$ in $\alpha'$ definiranima zgoraj.
+    Potem obstaja linearna funkcija s parametroma $1 / \alpha$ in $1 / \alpha'$.+
+\end{lema}
+
+Bisektor lahko torej parametriziramo z enim od parametrov $\alpha$ oziroma $\alpha'$.
+
+\end{document}

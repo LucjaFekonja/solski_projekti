@@ -1,0 +1,183 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts} 
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[slovene]{babel}
+
+\newtheorem{lema}{Lema}
+\newtheorem{izrek}{Izrek}
+\newtheorem{trditev}{Trditev}
+\newtheorem{dokaz}{Dokaz}
+
+% Preimenuj naslov Algoritma v Algoritem
+\makeatletter
+\renewcommand{\ALG@name}{Algoritem}
+\makeatother
+
+% Preimenuj Procedure v Procedura
+\renewcommand{\algorithmicprocedure}{\textbf{Procedura}}
+\floatname{algorithm}{Algoritem}
+
+\title{Delaunayeva triangulacija v Hilbertovi metriki}
+
+\begin{document}
+Dual Voronojevega diagrama v Hilbertovi metriki, definirani z večkotnikom $K$ in mesti $S$, je \textit{Delaunayeva triangulacija}, označena kot DT($S$), v kateri sta mesti $p$ in $q$ povezani, če sta njuni pripadajoči Voronojevi celici sosednji.
+
+Povezanost dveh mest lahko preverimo s pomočjo Hilbertovih krogel. Dve mesti sta povezani, če in samo če obstaja Hilbertova krogla, katere rob vsebuje obe mesti, medtem ko njena notranjost ne vsebuje nobenega. Podobno, tri točke določajo trikotnik v Delaunayejevi triangulaciji, ko obstaja Hilbertova krogla, ki vsebuje vse tri točke na svojem robu in ne vsebuje nobene druge točke. Krožnico, ki omejuje to kroglo, imenujemo \textit{Hilbertova očrtana krožnica}, ki je enolično določena, če obstaja.
+
+\subsection{Vpeljava pomožnih struktur}
+V nadaljevanju bomo predstavili algoritem za konstrukcijo DT($S$). Pri tem bomo uporabili simetrale in njihova krajišča, pri čemer po pomemben vrstni red zapisa. Krajišče na $(a, b)$-simetrali naj bo tisto, ki leži na levi strani vektorja $\vec{ab}$. Drugemu krajišču bomo rekli krajišče $(b, a)$-simetrale.
+
+Kot je razvidno iz slike \ref*{triang}, triangulacija ne pokrije celotnega večkotnika, zato bomo definirali nekaj pomožnih elementov, s katerimi bomo zagotovili, da bo $K$ popolnoma pokrit.
+% \begin{figure}[h!]
+%    \centering
+%    \includegraphics{triangulacija.png}
+%    \caption{Triangulacija, ki ne pokrije celotnega večkotnika.}
+%    \label{triang}
+% \end{figure}
+
+Trikotnik, katerega vsa ogljišča so mesta, se imenuje \textit{standardni trikotnik}. 
+Za vsako povezavo $pq$, ki meji na zunanjo stran triangualizacije, obstaja eno krajišče $(p, q)$-simetrale, ki leži na robu $\delta (K)$. Naj $x$ označuje to krajišče. Potem trikotniku $\Delta pqx$ pravimo \textit{zob}.
+Vse dele večkotnika $K$, ki niso standardni trikotniki ali zobje, bomo imenovali \textit{praznine}. Slednje niso nujno trikotniki, ampak so enolično določene s tremi točkami. Zato bomo uporabljali notacijo $\Delta pxy$ za praznino definirano z mestom $p$ in robnima točkama $x$ in $y$.
+% \begin{figure}[h!]
+%    \centering
+%    \includegraphics{elementi.png}
+%    \caption{Standardni trikotniki, zobje in praznine.}
+%    \label{triang}
+% \end{figure}
+
+\subsection{Naključnostni postopni algoritem}
+Algoritem se začne z naključno permutacijo množice $S$ in inicializacijo triangulacije. Za slednjo izberemo poljubni mesti $a$ in $b$ in poiščemo krajišči $(a, b)$-simetrale. Nato dodamo povezavo $ab$ in ustvarimo dva zoba tako, da povežemo $a$ in $b$ s krajišči simetrale. Postopoma dodajamo mesta in posodabljamo triangulacijo.
+\begin{algorithm}
+    \caption{Konstrukcija Delaunayeve triangulacije množice $S$.}
+    \label{alg:delaunay}
+    \begin{algorithmic}
+    \Procedure{Delaunayeva triangulacija}{$S$}
+        \State $\tau \leftarrow$ prazna triangulacija
+        \State Naključno permutiraj $S$
+        \State $a, b \leftarrow$ poljubni točki iz $S$
+        \State $x, y \leftarrow$ krajišči $(a, b)$-simetrale
+        \State Dodaj povezave $ab, ax, ay, bx$ in $by$ v $\tau$
+        \State \textbf{for all} $p \in S \setminus \{ a, b \}$ \textbf{do}
+        \State \qquad \Call{Dodaj}{$p, \tau$}  
+        \State \textbf{end for}
+        \State \textbf{return} $\tau$
+    \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+Vsako naslednjo točko lahko dodamo v standardni trikotnik, zob ali praznino. Če jo dodamo v standardni trikotnik, jo povežemo z ogljišči trikotnika.
+\begin{figure}[h!]
+   \centering
+   \includegraphics[width=5cm]{dodaj_v_trikotnik.png}
+   \caption{Dodajanje v standardni trikotnik.}
+   \label{dodaj_tri}
+\end{figure}
+Če točko dodamo v zob, izbrišemo ogljišče zoba, ki je na robu, povežemo novo točko z najbližjima mestoma in dodamo dva nova zoba glede na novonastali simetrali.
+\begin{figure}[h!]
+   \centering
+   \includegraphics[width=5cm]{dodaj_v_zob.png}
+   \caption{Dodajanje v zob.}
+   \label{dodaj_zob}
+\end{figure}
+Če točko dodamo v praznino, jo povežemo z edinim mestom v praznini in dodamo dva nova zoba.
+\begin{figure}[h!]
+   \centering
+   \includegraphics[width=5cm]{dodaj_v_praznino.png}
+   \caption{Dodajanje v praznino.}
+   \label{dodaj_praz}
+\end{figure}
+
+\begin{algorithm}
+    \caption{Dodajanje točke $p$ iz $S$ v triangulacijo $\tau$.}
+    \label{alg:dodajanje}
+    \begin{algorithmic}
+    \Procedure{Dodaj}{$p, \tau$}
+        \State $\Delta abc \leftarrow$ trikotnik v $\tau$, ki vsebuje $p$ 
+        \State \textbf{if} $\Delta abc$ je standardni trikotnik \textbf{then}
+        \State \qquad Dodaj povezave $ap, bp$ in $cp$ v $\tau$
+        \State \qquad \Call{Obrni povezavo}{$ab, p, \tau$}, \Call{Obrni povezavo}{$bc, p, \tau$}, 
+        \State \qquad \Call{Obrni povezavo}{$ca, p, \tau$}  
+        \State \textbf{else if} $\Delta abc$ je zob \textbf{then}
+        \State \qquad Naj bosta $a$ in $b$ mesti in $c$ krajišče $(a, b)$-simetrale
+        \State \qquad $x, y \leftarrow$ krajišči $(a, p)$- in $(p, b)$-simetral 
+        \State \qquad Iz $\tau$ odstrani vozlišče $c$ ter povezavi $ac$ in $bc$
+        \State \qquad Dodaj povezave $ap, bp, ax, px, by$ in $py$ v $\tau$
+        \State \qquad \Call{Obrni povezavo}{$ab, p, \tau$}
+        \State \qquad \Call{Popravi zob}{$\Delta apx, p, \tau$}, \Call{Popravi zob}{$\Delta pby, p, \tau$}
+        \State \textbf{else}
+        \State \qquad Naj bo $a$ mesto in naj bosta $b$ in $c$ na robu
+        \State \qquad $x, y \leftarrow$ krajišči $(a, p)$- in $(p, a)$-simetral 
+        \State \qquad Dodaj povezave $ap, ax, px, ay$ in $py$ v $\tau$
+        \State \qquad \Call{Popravi zob}{$\Delta apx, p, \tau$}, \Call{Popravi zob}{$\Delta pay, p, \tau$}
+        \State \textbf{end if}
+    \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+Ob dodajanju novega vozlišča se lahko zgodi, da nova triangulacija ne ustreza pogoju praznih Hilbertovih očrtanih krogov. V nekaterih primerih pa lahko pride do izgube geometrijske pravilnosti, na primer, ko se dva zoba prekrivata.
+Morebitne kršitve popravimo s procedurama \Call{Obrni povezavo}{} in \Call{Popravi zob}{}.
+
+\Call{Obrni povezavo}{} sprejme povezavo $ab$ in točko, ki smo jo dodali, $p$. Nato poišče trikotnik $\Delta abc$, ki leži na desni strani povezave $ab$, in preveri ali $p$ leži znotraj očrtanega kroga določenega s točkami $a, b$ in $c$. Če leži, odstrani povezavo $ab$ in preveri ali je $\Delta abc$ standardni trikotnik ali zob.
+V kolikor je standardni trikotnik, doda povezavo $pc$ in preveri ali morata biti tudi povezavi $ac$ in $cb$ obrnjeni.
+Če je $\Delta abc$ zob, odstranimo vozlišče $c$ na robu, poiščemo krajišči $x$ in $y$ $(p, a)$- in $(b, p)$-simetral in v $\tau$ dodamo nova zoba $\Delta pax$ in $\Delta bpy$.
+
+
+\begin{algorithm}
+    \caption{Obračanje povezav, v primeru kršenja pogoja praznih hilbertovih krogov.}
+    \label{alg:obracanje}
+    \begin{algorithmic}
+    \Procedure{Obrni povezavo}{$ab, p, \tau$}
+        \State $c \leftarrow$ vozlišče trikotnika na desni strani povezave $ab$ v $\tau$
+        \State \textbf{if} $p$ leži v Hilbertovem očrtanem krogu določenem z $a, b, c$ \textbf{then}
+        \State \qquad Odstrani povezavo $ab$ iz $\tau$
+        \State \qquad \textbf{if} $\Delta abc$ je standardni trikotnik \textbf{then}
+        \State \qquad \qquad Dodaj povezavo $pc$ v $\tau$
+        \State \qquad \qquad \Call{Obrni povezavo}{$ac, p, \tau$}, \Call{Obrni povezavo}{$cb, p, \tau$}
+        \State \qquad \textbf{else}
+        \State \qquad \qquad $x, y \leftarrow$ krajišči $(p, a)$- in $(b, p)$-simetral
+        \State \qquad \qquad Odstrani vozlišče $c$ in povezavi $ac$ ter $bc$ it $\tau$
+        \State \qquad \qquad Dodaj povezave $ax, px, by$ in $py$ v $\tau$
+        \State \qquad \textbf{end if}
+        \State \textbf{end if}
+    \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+Procedura \Call{Popravi zob}{} razreši probleme, ko se dva zoba prekrivata. Procedura sprejme trikotnik $\Delta abx$, kjer sta $a$ in $b$ mesti, $x$ pa krajišče na robu. Novo dodano mesto je ena izmed točk $a$ ali $b$.
+Naj bo $\Delta bcy$ sosednji zob zoba $\Delta abx$ v smeri urinega kazalca. Če se prekrivata, ju zamenjamo s standardnim trikotnikom $\Delta abc$ in zobom $\Delta acz$, kjer je $z$ krajišče $(a, c)$-simetrale.
+Če je novododana točka $a$, moramo preveriti ali je potrebno obrniti povezavo $bc$ in popraviti zob $\Delta acz$.
+
+\begin{algorithm}
+    \caption{Poprabljanje zob, ki se prekrivajo.}
+    \label{alg:obracanje}
+    \begin{algorithmic}
+    \Procedure{Poprabi zob}{$\Delta abx, p, \tau$}
+        \State $\Delta bcy \leftarrow$ sosednji zob zobu $\Delta abx$ v smeri urinega kazalca 
+        \State \textbf{if} $\Delta abx$ in $\Delta bcy$ se prekrivata \textbf{then}
+        \State \qquad $z \leftarrow$ krajišče $(a, c)$-simetrale
+        \State \qquad Odstrani vozlišči $x$ in $y$ ter povezave $ax, bx, by$ in $cy$ iz $\tau$
+        \State \qquad Dodaj povezave $ac, az$ in $cz$ v $\tau$
+        \State \qquad \textbf{if} $p = a$ \textbf{then}
+        \State \qquad \qquad \Call{Obrni povezavo}{$bc, p, \tau$}
+        \State \qquad \qquad \Call{Popravi zob}{$\Delta acz, p, \tau$}
+        \State \qquad \textbf{end if}
+        \State \textbf{else}
+        \State \qquad Ponovi za zob, ki je sosednji $\Delta abx$ v nasprotni smeri urinega kazalca
+        \State \textbf{end if}
+    \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+Na koncu izpeljimo pričakovano časovno zahtevnost danega algoritma. Podobno kot pri Delaunayevi triangulaciji v Evklidskem prostoru, lahko poiščemo trikotnik, v katerem je vsebovana novododana točka v pričakovanem času $\mathcal{O} (\log n)$ z definiranjem podatkovnih strukture za določanje položaja točke, podobno kot to storijo v članku ....
+Glavna razlika v časovni zahtevnosti nastane zaradi izračuna Hilbertovih očrtanih krogov. Omenimo brez dokaza, da so le-ti izračunani v pričakovanem času $\mathcal{O} (\log^3 m)$. Dokaz bralec najde v članku ... .
+Faktorja $\mathcal{O} (\log n)$ in $\mathcal{O} (\log^3 m)$ se izvedeta končno število krat za vsako od $n$ dodanih točk. Tako smo dokazali naslednjo trditev.
+
+\begin{trditev}
+    Naključna postopna konstrukcija Delaunayeve triangulacije množice $n$ točk znotraj konveksnega $m$-kotnika ima pričakovano časovno zahtevnost $\mathcal{O} (n (\log^3 m + \log n))$.
+\end{trditev}
+
+\end{document}

@@ -1,0 +1,70 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[slovene]{babel}
+
+\newtheorem{izrek}{Izrek}
+\newtheorem{dokaz}{Dokaz}
+
+\title{Algoritem deli in vladaj}
+
+\begin{document}
+
+V tem razdelku si bomo ogledali algoritm deli in vladaj za iskanje Voronoijevega diagrama $m$-kotnika $K$ z $n$ sites $S$.
+Problem razdelimo na manjše z razdelitvijo točk v $S$ na leve $S_L$ in desne $S_R$ glede na navpično premico $l$, tako da je v obeh skupinah približno enako število točk.
+Nato poiščemo Voronijeva diagrama $Vor (S_L)$ in $Vor (S_R)$ in ju združimo.
+Zdrževanje poteka z izračunom tako imenovanega bisektorja $B (S_L, S_R)$, to je množica točk, ki so ekvidistantne od najbližjih siteov v $S_L$ in $S_R$.
+Iskanje bisektorja se začne v spodnjem presečišču $K \cap l$, označenem s $q$, nakar poiščemo $q$-ju najbližji site $p$. 
+Če je $p \in S_R$, se začnemo pomikati v smeri urinega kazalca, če pa je $p \in S_L$ pa v nasprotni smeri.
+V glavnem obstajata dva načina premikanja v iskanju bisektorja - premikanje po bisektorju in premikanje po robu $K$.
+
+Premikanje po bisektorju, ki razmejuje sektorja site-ov $p_i$ in $p_k$ prekinemo, če bisektor seka enega od dveh vozlišč sektorja ali seka drug del bisektorja ali seka rob lika $K$.
+V prvem primeru v presečišču dodamo segmentno vozlišče, spokes in nadaljujemo risanje v novem sektorju.
+V drugem primeru ustvarimo novo Voronoijevo vozlišče, povežemo spokes in nadaljujemo risanje po pravilnem bisektorju.
+V zadnjem primeru dodamo spokse od najbližjih siteov do presečišča in se začnemo premikati po robi $K$.
+
+Premikanje po robu $K$ poteka v smeri urinega kazalca, če je točka na robu najbližje siteu v $S_R$, sicer se premikamo v nasprotni smeri.
+Naj bosta $p_i \in S_L$ in $p_k \in S_R$ sitea, ki sta najbližje opazovani točki na robu. 
+Z uporabo leme 9 lahko ugotovimo, ali $(p_i, p_k)-bisektor$ seka rob $K$. 
+Če ga, dodamo spokes od $p_i$ in $p_k$ do presečišča in nadaljujemo risanje bisektorja po $(p_i, p_k)-bisektorju$.
+Sicer pa naletimo na vozliščče lika $K$ in nadaljujemo iskanje vzdolž roba $K$.
+
+\begin{izrek}
+    Algoritem deli in vladaj za konveksen $m$-kotnik $K \subset R$ in $n$ točk $S \subset K$ izračuna $Vor_K (S)$ v času $\mathcal{O} (nm \log n)$.
+\end{izrek}
+
+\begin{dokaz}
+    Algoritem problem z $n$ sitesi razdeli na dva podproblema polovične velikosti. 
+    Združevanje deluje z iskanjem bisektorja. 
+    Vsak segment bisektorja lahko najdemo v konstantnem času. Po lemi (7) je teh največ $mn$.
+    Zgornji trditvi združimo in ugotovimo, da je časovna zahtevnost problema z $n$ sitei $T(n) = 2 T(\frac{n}{2}) + mn$.
+    Po Mojstrovi metodi nato izračunamo, da je časovna zahtevnost ravno $\mathcal{O} (nm \log n)$.
+\end{dokaz}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
