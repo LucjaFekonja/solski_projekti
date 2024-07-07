@@ -1,0 +1,908 @@
+\documentclass[fleqn]{article}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage[slovene]{babel}
+
+\title{Questions for oral exam, Logic in CS}
+\author{Lucija Fekonja}
+
+\begin{document}
+
+\maketitle
+
+\section{Logic and type theory}
+
+\subsection{Propositional logic}
+\textit{Lecture 1}
+\begin{enumerate}
+    {\color{red}\item Define a formula of propositional logic $\Phi$.}
+    \begin{itemize}
+        \item Describe the rules.
+    \end{itemize}
+    {\color{red}\item How can we describe formulas?}
+    \item What is the grammar for propositional logic formula?
+    {\color{red}\item Why are proof rules useful?}
+    {\color{red}\item Define tautologies.}
+    \item Write and explain proof rules for propositional logic
+    \begin{itemize}
+        \item Conjunction introduction rules
+        \item Conjunction elimination rules
+        \item Disjunction introduction rules
+        {\color{red}\item Disjunction elimination rules}
+        \item Implication introduction rules
+        \item Implication elimination rules
+        {\color{red}\item How would you explain Implication rules?}
+        {\color{red}\item Negation introduction rules}
+        {\color{red}\item Negation elimination rules}
+        {\color{red}\item True rules}
+        {\color{red}\item False rules}
+    \end{itemize}
+    \item How can we write proofs?
+    \item EXAMPLE \-- Prove $p \wedge q \Rightarrow q \wedge p$ with a list.
+    \item EXAMPLE \-- Prove $p \wedge q \Rightarrow q \wedge p$ with a tree.
+    {\color{red}\item EXAMPLE \-- Prove $p \wedge (q \vee r) \Rightarrow (p \wedge q) \vee (p \wedge r)$ with a list.}
+    {\color{red}\item EXAMPLE \-- Prove $p \wedge (q \vee r) \Rightarrow (p \wedge q) \vee (p \wedge r)$ with a tree.}
+    \item How do we come to a contradiction?
+    {\color{red}\item Write a rule with which we can apply proof by contradiction?}
+    {\color{red}\item EXAMPLE \-- Prove $\Phi \vee \neg \Phi$.}
+    {\color{red}\item Simplify grammar.}
+\end{enumerate}
+
+\subsection{Simple types and their proof rules and computation rules}
+\textit{Lecture 1}
+\begin{enumerate}
+    \item Give grammar of type theory with sum and product types.
+    \begin{itemize}
+        {\color{red}\item What is necessery for a type theory grammar to have? (3)}
+    \end{itemize}
+    \item Explain the analogy between types and formulas.
+    \begin{itemize}
+        {\color{red}\item Product type introduction rules}
+        {\color{red}\item Product type elimination rules}
+        {\color{red}\item Analogy to what is product type?}
+        {\color{red}\item Function type introduction rules}
+        {\color{blue}\item Function type elimination rules}
+        {\color{red}\item Analogy to what is function type?}
+        {\color{red}\item How would you explain function rules?}
+        {\color{red}\item Sum type introduction rules}
+        {\color{blue}\item Sum type elimination rules}
+        {\color{red}\item Rule for empty type}
+    \end{itemize}
+    \item Name this analogy.
+    {\color{red}\item Give computation rules}
+    \begin{itemize}
+        {\color{blue}\item Product type}
+        {\color{blue}\item Sum type }
+        {\color{red}\item Function type}
+    \end{itemize}
+    {\color{red}\item EXAMPLE -- Derive a term of type $\sigma \times \tau \rightarrow \tau \times \sigma$.}
+    {\color{blue}\item EXAMPLE -- Write a derivation of distributiviry to derive the term $\sigma \times (\tau + \Phi) \rightarrow (\sigma \times \tau) + (\sigma \times \Phi)$.}
+\end{enumerate}
+
+\subsection{The universes Prop and Type}
+\textit{Lecture 2 professor's notes}
+\begin{enumerate}
+    \item With what can we replace the grammar for propositional logic? 
+    {\color{red}\item Give rules in the Prop universe}
+    \begin{itemize}
+        {\color{blue}\item False}
+        {\color{red}\item Conjunction}
+        {\color{blue}\item Disjunction}
+        {\color{red}\item Implication}
+    \end{itemize}
+    {\color{red}\item How do we distinguish between judgements $\Phi : Prop$ and $\Phi$?}
+    \item With what can we replace the grammar for Types? 
+    {\color{red}\item Give rules in the Type universe }
+    \begin{itemize}
+        {\color{red}\item Empty type}
+        {\color{red}\item Product}
+        {\color{red}\item Sum}
+        {\color{red}\item Function}
+    \end{itemize}
+    {\color{red}\item How do we distinguish between judgements $A : Type$ and $t : A$?}
+\end{enumerate}
+
+\subsection{Quantifiers}
+\textit{Lecture 2}
+\begin{enumerate}
+    \item How do we also call predicate logic?
+    \item How do we get predicate logic form propositional logic?
+    {\color{red}\item How can we extend propositional logic? (3)}
+    \begin{itemize}
+        \item aka. What do we add to the grammar?
+    \end{itemize}
+    {\color{red}\item Give well formed rules for quantifiers}
+    \begin{itemize}
+        {\color{blue}\item $\forall$}
+        {\color{red}\item $\exists$}
+    \end{itemize}
+    {\color{red}\item Give proof rules for quantifiers}
+    \begin{itemize}
+        {\color{blue}\item $\forall i$}
+        {\color{red}\item $\forall e$}
+        {\color{blue}\item $\exists i$}
+        {\color{blue}\item $\exists e$}
+    \end{itemize}
+    {\color{red}\item What is the standard approach to predicate logic?}
+    \begin{itemize}
+        {\color{red}\item What do we choose?}
+        {\color{red}\item EXAMPLE -- Give examples.}
+        {\color{red}\item How do we use it?}
+        {\color{blue}\item EXAMPLE -- Give examples.}
+        {\color{red}\item How do we use it's properties?}
+        {\color{red}\item EXAMPLE -- Give examples.}
+        {\color{blue}\item What do predicates express?}
+    \end{itemize}
+    {\color{red}\item What is an atomic formula?}
+    \item EXAMPLE -- Give a simple example of atomic formula.
+    {\color{red}\item EXAMPLE -- Give an example of using predicate logic using terms for $t, \cdot, 0, 1, <$.}
+    \begin{itemize}
+        \item What here are terms?
+        {\color{red}\item What here are atomic formulas?}
+        \item What holds for variables?
+        \item What are free variables?
+        \item Does this formula have free variables?
+        \item Where is this formula true and where is it false?
+    \end{itemize} 
+    {\color{red}\item What is the major limitation of traditional predicate logic?}
+    {\color{blue}\item Where is the problem from the perspective of programming?}
+    {\color{red}\item How can we solve this problem?}
+    {\color{red}\item Write an unified grammar.}
+    {\color{red}\item With what can we replace grammar?}
+    {\color{blue}\item What does type theory give us?}
+    {\color{red}\item What does predicate logic give us?}
+    {\color{blue}\item How can we combine the two? }
+\end{enumerate}
+
+
+\subsection{Interesting types}
+\textit{Lecture 3}
+\begin{enumerate}
+    \item How do we call "adding new types"?
+    {\color{blue}\item What are formation rules used for?}
+    {\color{red}\item EXAMPLE -- Give examples of formation rules.}
+    {\color{blue}\item What do introduction rules give?}
+    {\color{red}\item EXAMPLE -- Give introduction rules for natural numbers. }
+    {\color{blue}\item What do elimination rules give?}
+    {\color{red}\item Give four examples of type constructors / new types.}
+    {\color{red}\item Formation rules for list type constructor.}
+    {\color{red}\item How else can we write formation rule?}
+    {\color{red}\item Introduction rules for list type constructor.}
+    {\color{red}\item How else can we write introduction rule?}
+    \item How do we construct a list?
+    {\color{red}\item Formation rules for vector type constructor.}
+    {\color{blue}\item How else can we write formation rule?}
+    {\color{red}\item Introduction rules for vector type constructor.}
+    {\color{red}\item How else can we write introduction rule?}
+    {\color{red}\item How is $A \rightarrow B$ defined?}
+    {\color{red}\item Formation rule for product type}
+    {\color{blue}\item Introduction rule for product type}
+    {\color{blue}\item Elimination rule for product type}
+    {\color{blue}\item Computation rule for product type}
+    {\color{red}\item How is $A \times B$ defined?}
+    {\color{red}\item Formation rule for dependent sum type}
+    {\color{blue}\item Introduction rule for dependent sum type}
+    {\color{blue}\item Elimination rules for dependent sum type}
+    {\color{blue}\item Computation rules for sum type}
+\end{enumerate}
+
+\subsection{The BHK interpretation and the Curry-Howard correspondence}
+\textit{Lecture 3}
+\begin{enumerate}
+    \item Which elements do the following types have?
+    \begin{itemize}
+        \item $0$
+        \item $A \times B$
+        {\color{red}\item $A + B$}
+        {\color{red}\item $A \rightarrow B$}
+        {\color{blue}\item $\pi x: A.B$}
+        {\color{red}\item $\sum x: A.B$}
+    \end{itemize}
+    {\color{blue}\item What does BHK stand for?}
+    {\color{red}\item What did they do?}
+    {\color{red}\item Give proofs for the following terms:}
+    \begin{itemize}
+        {\color{red}\item $\bot$}
+        \item $\Phi \wedge \Psi$
+        \item $\Phi \vee \Psi$
+        {\color{red}\item $\Phi \rightarrow \Psi$}
+        {\color{blue}\item $\forall x : A. \Phi$}
+        {\color{blue}\item $\exists x: A. \Phi$}
+    \end{itemize}
+    {\color{red}\item What does Curry-Howard correspondance say?}
+    {\color{red}\item For what kind of theory does it hold?}
+    \item What can we use instead of:
+    \begin{itemize}
+        \item $\bot$
+        \item $\Phi \wedge \Psi$
+        \item $\Phi \vee \Psi$
+        \item $\Phi \rightarrow \Psi$
+        {\color{red}\item $\forall x : A. \Phi$}
+        {\color{red}\item $\exists x: A. \Phi$}
+    \end{itemize}
+    {\color{red}\item Who developed this approach?}
+    {\color{red}\item When?}
+    {\color{red}\item What approach does Lean take?}
+    {\color{blue}\item Describe this approach.}
+    {\color{red}\item Define subuniverse}
+    {\color{blue}\item What is a subterminal property?}
+    {\color{blue}\item What do we also need here?}
+    {\color{red}\item How do we change the formation rule for product type?}
+    {\color{red}\item What is Scott-Prawitz interpretation of logic?}
+    \item How did they define the following terms?
+    \begin{itemize}
+        {\color{blue}\item $\bot$}
+        {\color{red}\item Which equality do we have using this definition?}
+        {\color{blue}\item $\Phi \wedge \Psi$}
+        {\color{red}\item $\Phi \vee \Psi$}
+        \item $\Phi \rightarrow \Psi$
+        {\color{red}\item $\forall x : A. \Phi$}
+        {\color{blue}\item $\exists x: A. \Phi$}
+    \end{itemize}
+    \item Explain $\Phi \wedge \Psi$ of Scott-Prawitz interpretation
+    \begin{itemize}
+        {\color{blue}\item If we want to derive introduction rule}
+        {\color{blue}\item If we want to derive elimination rule }
+    \end{itemize}    
+\end{enumerate}
+
+\subsection{Natural numbers, lists and vectors as inductive types}
+\textit{Lecture 4}
+\textbf{Nat}
+\begin{enumerate}
+    {\color{blue}\item Write out induction on natural numbers}
+    {\color{red}\item Define the eliminator for natural numbers}
+    {\color{red}\item What do we need do define for the eliminator? (name it)}
+    \item Give computation rules for natural numbers
+    \begin{itemize}
+        {\color{red}\item How do we use the recursor on 0?}
+        {\color{blue}\item How do we use the recursor on succ n?   } 
+    \end{itemize}
+    {\color{blue}\item EXAMPLE -- Proposition (fun), result, function}
+    {\color{blue}\item How do we define a sum of two natural numbers?}
+    {\color{blue}\item Give an improved version of n+m}
+    \item EXERCISE -- Derive $succ 0 + succ 0$
+\end{enumerate}
+
+\textbf{Lists}
+\begin{enumerate}
+    {\color{red}\item Give constructors for lists (2)}
+    {\color{blue}\item Give eliminator for lists}
+    {\color{red}\item Give computation rules for lists (2)}
+    \item EXERCISE - Define append on lists using $R_{list}$.
+\end{enumerate}
+
+\textbf{Vectors}
+\begin{enumerate}
+    {\color{red}\item Give constructors for vectors (2)}
+    {\color{blue}\item Give eliminator for vectors}
+    {\color{red}\item Give computation rules for vectors (2)}
+\end{enumerate}
+
+\textbf{Propositional equality}
+\begin{enumerate}
+    {\color{blue}\item Give formation rule}
+    {\color{blue}\item Define constructur $rfl$}
+    {\color{blue}\item Define eliminator}
+    {\color{blue}\item Give computation rule}
+    {\color{red}\item What is the intuition for propositional equality?}
+\end{enumerate}
+
+\textbf{Judgemental equality}
+\begin{enumerate}
+    {\color{red}\item What do we define?}
+    {\color{blue}\item Give formulation rule for judgemental equality.}
+    {\color{blue}\item Give substitution rule for judgemental equality.}
+\end{enumerate}
+
+
+\subsection{Tantologies and satisfiability}
+\textit{(Lecture 5)}
+\begin{enumerate}
+    {\color{red}\item Determine grammar of propositional logic.}
+    {\color{red}\item What is a formula?}
+    {\color{red}\item What are it's arguments?}
+    {\color{red}\item What can we determine with a formula?}
+    {\color{red}\item EXAMPLE - Formula in propositional Logic.}
+    {\color{red}\item Define a valid tantology.}
+    {\color{red}\item Define a satisfiable formula.}
+    {\color{red}\item What is such $b$ called?}
+    {\color{red}\item Define equivalence.}
+    {\color{red}\item How can we establish that a formula is a tantology? (2)}
+    \item In what time do they work?
+    \item What theorems do we have for natural deduction?
+    {\color{red}\item Give soundness theorem.}
+    {\color{red}\item Give completeness thorem.}
+    {\color{red}\item What is the size of the truth table.}
+    \item When is a formula a tantology based on the truth table?
+    \item What can we also determine with a truth table?
+    \item How?
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{SAT problem}
+
+\subsection{Normal forms for formulas}
+\textit{Lecture 5}
+\begin{enumerate}
+    \item Define the negation normal form.
+    \item Define the grammar of NNF.
+    \item What does deMorgan say about NNF?
+    \item How can we rewrite a formula for it to be written in NNF? (5) 
+    \item In what time can we compute NNF from the original?
+\end{enumerate}
+
+\subsection{Conjunctive and  normal form}
+\textit{Lecture 5}
+\begin{enumerate}
+    \item Define a literal
+    \item Define a clause
+    \item What is a clause of length 0?
+    \item Define conjunctive normal form
+    \item What is a CNF of length 0?
+    \item Define a co-clause
+    \item Define a disjunctive normal form.
+    \item What proposition do we make on CNF and DNF?
+    \item Give an recursive algorithm for computing $\Phi^{CNF}$. (6)
+    \begin{itemize}
+        \item What do we assume for $\Phi$?
+    \end{itemize}
+    \item In what time can we compute CNF and DNF?
+    \item -------------???-------------- 
+\end{enumerate}
+
+\subsection{SAT problem}
+\textit{Lecture 5}
+\begin{enumerate}
+    \item What is the input?
+    \item What is the output?
+    \item What is the related problem to SAT?
+    \item What is it's input?
+    \item What is it's output?
+    \item How are this two problems related?
+    \item In what time can $\Phi$ be solved?
+    \begin{itemize}
+        \item In what form does $\Phi$ have to be written for that to be the case?
+    \end{itemize}
+    \item Exactly when is a DNF satisfiable?
+    \item What is the open question?
+    \item What would be proved if this it true?
+    \item When is SAT solving sufficient?
+    \item What transformation do we define?
+    \item What is the imageof this mapping?
+    \item What property does this transformation have?
+    \item In what time can it be computed?
+    \item For what is SAT solving useful?
+    \item What is a checkable solution called?
+    \item EXAMPLE - Give an example of a problem that can be solved with SAT
+    \begin{itemize}
+        \item What is a 3-coloring?
+        \item What is the question?
+        \item How do we solve it?
+        \item What do we define?
+        \item How does the formula look like?
+        \item What holds for every edge?
+        \item When does a graph have a 3-colouring?
+    \end{itemize}
+    \item Explain DPLL algorithm
+\end{enumerate}
+
+
+\subsection{Examples}
+\textit{Lecture 6}
+\begin{enumerate}
+    \item We change the algorithm for SAT solver for it to be informative. How?
+    • Input?
+    • Output?
+    \item In what time can SAT work?
+    \item EXAMPLE - $\Phi = \neg (( x \vee \neg y) \wedge \neg (x \wedge \neg (y \wedge z)))$
+    \begin{itemize}
+        \item Create a tree
+        \item Substitute
+        \item Create a list of clauses
+    \end{itemize}
+    \item EXAMPLE - Sudoku
+    \begin{itemize}
+        \item How do we represent a problem?
+        \item How many variables do we have?
+        \item What is the goal?
+        \item What holds for square 11 because there has to be to least one number in every square?
+        \item How many such clauses exist?
+        \item What holds for square 11 because there has to be to most one number in every square?
+        \item How many such clauses exist?
+        \item How many clauses exist?
+        \item How many clauses exist for a 4x4 sudoku?
+    \end{itemize}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Predicate logic and bounded model checking}
+
+\subsection{Signatures, terms and formulas}
+\textit{Lecture 7}
+\begin{enumerate}
+    {\color{red}\item EXAMPLE - Give example properties that could be used in computer systems (4)}
+    \item Define syntax
+    \item Define semantics
+    \item EXAMPLE - Axioms
+    \begin{itemize}
+        \item Example axiom - squares
+        \item Where is this true?
+        \item Where is it false?
+        {\color{red}\item Example axiom - inverse}
+        \item Where is this axiom true?
+        \item Where is it false?
+        {\color{red}\item What inthe past three examples is new vocabulary?}
+    \end{itemize}
+    \item How do we specify vocabulary?
+    {\color{blue}\item Define signature}
+    {\color{red}\item What does every predicate have?}
+    \item What does each function have?
+    {\color{red}\item What are $(P, F)$ in CS example?}
+    {\color{blue}\item What are $(P, F)$ in axioms example?}
+    {\color{red}\item What does signature determine? (2)}
+    {\color{blue}\item What do terms express?}
+    {\color{blue}\item What do formulas express?}
+    {\color{red}\item What is always a term?}
+    {\color{red}\item How can we construct terms?}
+    \item EX - What are terms in CS example?
+    \item EX - What are terms in axiom example?
+    {\color{red}\item What are always formulas?}
+    {\color{red}\item How can we construct formulas from terms?}
+    {\color{red}\item How can we construct formulas from formulas?}
+    {\color{blue}\item How else can we construct formulas?}
+    {\color{red}\item What here are atomic formulas?}
+    {\color{red}\item How are the semantics given?}
+\end{enumerate}
+
+\subsection{Free and bound variables, sentences, substitution}
+\begin{enumerate}
+    \item Interpret $\exists y. x=y\times y$ in N
+    \begin{itemize}
+        \item What does the formula express?
+        \item What is a free variable?
+        \item What is a bound variable?
+        \item In what scope?
+    \end{itemize}
+    {\color{red}\item What kind of variables are not in axiom exercise (exercise 2)?}
+    {\color{red}\item What is such a formula called?}
+\end{enumerate}
+
+\subsection{Structures, the satisfaction relation, satisfiability, validity, the statement of Gödel's completeness theorem}
+\begin{enumerate}
+    {\color{red}\item Formally define structure}
+    \begin{itemize}
+        \item M
+        {\color{blue}\item p}
+        \item f
+    \end{itemize}
+    {\color{red}\item Give natural interpretation of $(\leq, +, \cdot, 0, 1)$}
+    \item What do we get with such interpretation?
+    {\color{red}\item What is each such interpretation?}
+    {\color{red}\item How do we interpert a term in a structure?.}
+    \item What is $\sigma$?
+    {\color{blue}\item What does it map?}
+    {\color{red}\item Where is a variable mapped?}
+    {\color{red}\item Where is a function mapped?}
+    {\color{blue}\item How are formulas interpreted?}
+    {\color{red}\item How do we write an interpretation?}
+    {\color{red}\item How do we read it?}
+    \item When are the following interpretations true?
+    \begin{itemize}
+        \item $m \models_{\sigma} P (t_1, \dots t_n)$
+        \item $m \models_{\sigma} t_1 = t_2$
+        {\color{red}\item $m \models_{\sigma} \Phi \rightarrow \Psi$}
+        \item $m \models_{\sigma} \Phi \wedge \Psi$
+        \item $m \models_{\sigma} \Phi \vee \Psi$
+        \item $m \models_{\sigma} \neg \Phi$
+        {\color{blue}\item $m \models_{\sigma} \forall x. \Phi$}
+        {\color{blue}\item $m \models_{\sigma} \exists x. \Phi$}
+    \end{itemize}
+    \item What here are atomic formulas?
+    \item When is a truth value of $m \models_{\Sigma} \Phi$ independent of $\Sigma$?
+    \item How do we write this?
+    {\color{red}\item Define a valid sentance}
+    \item Define a satisfiable sentance
+    {\color{red}\item Give examples of valid formulas (2)}
+    {\color{red}\item Give examples of satisfiable formulas}
+    \item How are validity and satisfiability conected?
+    {\color{red}\item THEOREM - Turing / Church theorem}
+    {\color{red}\item How do we interpret this theorem?}
+    {\color{red}\item THEOREM  - Gödels completeness theorem}
+    {\color{red}\item Give the problem where Gödels theorem is used}
+    \begin{itemize}
+        {\color{blue}\item What is the input?}
+        {\color{red}\item What is the output?}
+        {\color{red}\item What is this algorithm called?}
+        {\color{red}\item Is it efficient?}
+        {\color{red}\item Where is it used?}
+    \end{itemize}
+\end{enumerate}
+
+
+\subsection{The computational status of validity and satisfiability}
+\textit{Lecture 7}
+\begin{enumerate}
+    \item What algorithm do we get with Gödels completeness theorem and the proof-checking algotrithm?
+    \begin{itemize}
+        {\color{red}\item Input?}
+        {\color{red}\item Output?}
+        {\color{red}\item What is the practical result?}
+        {\color{red}\item What are the theoretical results? (2)}
+        {\color{red}\item What algorithm therefore exists? (because of validity)}
+        {\color{red}\item What is the input?}
+        {\color{red}\item What is the output?}
+        {\color{blue}\item What practical consequence does it have?}
+        {\color{red}\item What algorithm therefore exists? (because of satisfiability)}
+        {\color{red}\item What is the input?}
+        {\color{red}\item What is the output?}
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Finite satisfiability and bounded satisfiability}
+\textit{Lecture 8}
+\begin{enumerate}
+    {\color{red}\item Create 6 axioms with predicates sever, client, connected}
+    {\color{red}\item Define a model}
+    {\color{blue}\item What is a model checking question?}
+    {\color{blue}\item What algorithm do we need?}
+    \item What do we compute/return in the following cases?
+    \begin{itemize}
+        {\color{red}\item $m \models_{\sigma} P (t_1, \dots t_n)$}
+        \item $m \models_{\sigma} t_1 = t_2$
+        {\color{red}\item $m \models_{\sigma} \Phi \wedge \Psi$}
+        \item $m \models_{\sigma} \neg \Phi$
+        {\color{blue}\item $m \models_{\sigma} \exists x. \Phi$}
+    \end{itemize}
+    {\color{red}\item What kind of problem is this?}
+    {\color{red}\item In what time does algorithm work?}
+    {\color{red}\item How is this run time called?}
+    \item Can we make it polynomial?
+    {\color{red}\item How?}
+    {\color{red}\item Depentent on what?}
+    {\color{blue}\item What axioms can we add (in the example from question 1)?}
+    \item What are we now interested in?
+    {\color{red}\item Can you ask this question in a different way? More formally}
+    {\color{blue}\item Algorithm for what do we need?}
+    \begin{itemize}
+        {\color{blue}\item Input?}
+        {\color{blue}\item Output?}
+    \end{itemize}
+    {\color{blue}\item Is the problem decidable?}
+    {\color{blue}\item What algorithm does exist?}
+    {\color{red}\item How would a naive algorithm work?}
+    {\color{red}\item Is it good? Why?}
+    \item Name the algorithm that is more practical
+    \begin{itemize}
+        {\color{blue}\item What is it's input?}
+        {\color{blue}\item What question does it answer?}
+        \item What is the output?
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Reducing bounded satisfiability to SAT solving}
+\begin{enumerate}
+    \item What is the main idea of bounded satisfiability thorem?
+    \item Which stages does the algorithm have?
+    \item Describe stage 1
+    \begin{itemize}
+        {\color{blue}\item What is the input?}
+        {\color{red}\item What do we add?}
+        {\color{blue}\item What do we build?}
+        {\color{blue}\item Using what?}
+        {\color{blue}\item What is the idea?}
+    \end{itemize}
+    {\color{red}\item After we have a sentance in predicate logic, what do we define?}
+    \item Where does this mapping map...
+    \begin{itemize}
+        {\color{blue}\item Predicate}
+        {\color{red}\item Negation}
+        \item Conjinction
+        {\color{blue}\item Existance}
+    \end{itemize}
+    {\color{red}\item FACT - When is $\Phi$ satisfied with a structure?}
+    {\color{blue}\item How do we get rid of function symbols in the propositional formula?}
+    \begin{itemize}
+        {\color{blue}\item With what do we replacee functions?}
+        {\color{blue}\item What axioms do we add? (2)}
+    \end{itemize}
+    {\color{red}\item How do we treat equality =?}
+    \begin{itemize}
+        {\color{red}\item What axioms do we add? (4)}
+    \end{itemize}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Linear-time temporal logic}
+
+\subsection{Transition system, LTL syntax, runs and the LTL satisfaction relation}
+\textit{Lecture 9}
+\begin{enumerate}
+    {\color{red}\item Define temporal logic.}
+    {\color{red}\item Define linear time.}
+    {\color{red}\item For what is LTL good?}
+    {\color{red}\item Give an example of something where LTL would be good to use.}
+    {\color{red}\item What system did we define? Name it.}
+    \begin{itemize}
+        {\color{red}\item How did we represent it? }
+        {\color{red}\item What components did we define?}
+        {\color{red}\item Draw a diagram.}
+    \end{itemize}
+    \item What properties can a LTL system have?
+    \begin{itemize}
+        {\color{red}\item 1 - name it}
+        \item 1 - what is the definition of the property?
+        \item 1 - does our example system have it? 
+        {\color{red}\item 2 - what is the definition of the property?}
+        {\color{red}\item 2 - does our example system have it?}
+        {\color{red}\item 2 - give an counterexample.}
+        {\color{red}\item 3 - name it.}
+        {\color{red}\item 3 - what is the definition of the property?}
+        {\color{red}\item 4 - name it }
+        {\color{red}\item 4 - what is the definition of the property?}
+    \end{itemize}
+    {\color{red}\item Define a transition system for LTL.}
+    \begin{itemize}
+        {\color{red}\item S}
+        {\color{red}\item $\rightarrow$}
+        {\color{red}\item property}
+        {\color{red}\item L}
+        {\color{red}\item anything else?}
+    \end{itemize}
+    {\color{red}\item How can we model a deadlock?}
+    {\color{red}\item What syntax for formulas did we define for temporal logic? (8)}
+        %   X Goes Forward Until We Rut
+    {\color{red}\item Define every symbol.}
+    {\color{red}\item Define a run.}
+    \item How do we also call a run?
+    \item What notation can we create from a standard notation of a run?
+    {\color{red}\item What relation did we define in temporal logic?}
+    {\color{red}\item What is it's notation?}
+    {\color{red}\item How do we read the notation?}
+    \item When is $\Pi \models \dots$ true? (give equality)
+    \begin{itemize}
+        {\color{red}\item $p$}
+        \item $\Phi \wedge \Psi$
+        \item $\Phi \vee \Psi$
+        \item $\Phi \rightarrow \Psi$
+        \item $\neg \Phi$
+        \item $\bot$
+        \item $\top$
+        {\color{red}\item $X \Phi$}
+        {\color{red}\item $G \Phi$}
+        {\color{red}\item $F \Phi$}
+        {\color{red}\item $\Phi U \Psi$}
+        {\color{red}\item $\Phi W \Psi$}
+        {\color{red}\item $\Phi R \Psi$}
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Examples of fairness constraints and how they are used}
+\textit{Lecture 9}
+\begin{enumerate}
+    {\color{red}\item What is a LTL model checking?}
+    \begin{itemize}
+        {\color{red}\item Input?}
+        {\color{red}\item Output?}
+    \end{itemize}
+    {\color{red}\item EXAMPLE - What does the algorithm return if we input $G ((t_1 \rightarrow Fc_1) \wedge (t_2 \rightarrow Fc_2))$?}
+    {\color{red}\item EXAMPLE - Slightly redraw the diagram you drew earlier}
+    \begin{itemize}
+        {\color{red}\item What does the algorithm return?}
+        {\color{red}\item When would the original model return true?}
+        {\color{red}\item Define this constraint}
+        {\color{red}\item With what can we model check?}
+        {\color{red}\item What does the algorithm return?}
+    \end{itemize}
+\end{enumerate}
+
+\subsection{NBAs (and GNBAs), their associated omega languages and the emptiness condition}
+\begin{enumerate}
+    \item We defined automats. What are they called?
+    {\color{red}\item EXAMPLE - Give a simple example}
+    \begin{itemize}
+        {\color{red}\item Draw a diagram}
+        {\color{red}\item Give an example of a word this automat would accept.}
+        {\color{red}\item When does this automat accept a $\omega$-word?}
+        {\color{red}\item Define a $\omega$-word.}
+        {\color{red}\item Give some more examples of words that are / are not accepted.}
+        {\color{red}\item Define $\omega$-language of the automations.}
+        {\color{red}\item Formally write $\omega$-language.}
+    \end{itemize}
+    \item EXAMPLE - Give another example of a NBA.
+    \begin{itemize}
+        {\color{red}\item Draw a diagram.}
+        {\color{red}\item What is $\omega$-language in this example?}
+    \end{itemize}
+    \item EXAMPLE - Give a third example of a NBA.
+    \begin{itemize}
+        {\color{red}\item Draw a diagram.}
+        {\color{red}\item What is $\omega$-language in this example?}
+    \end{itemize}
+    {\color{red}\item Define an NBA over an alphabet}
+    {\color{red}\item When is a $\omega$-word accepted in an NBA over an alphabet?}
+    {\color{red}\item PROPOSITION - When is a $\omega$-language of NBA non empty?}
+    {\color{red}\item What are we testing here?}
+    {\color{red}\item Define $\omega$-regular }
+    {\color{red}\item THEOREM - How can we construct new $\omega$-regular sets? (4)}
+    {\color{red}\item Define a general NBA.}
+    {\color{red}\item When is a word accepted?}
+    \item EXAMPLE - of a GNBA.
+    \begin{itemize}
+        {\color{red}\item Draw a diagram.}
+        \item What is the alphabet?
+        {\color{red}\item What is the $\omega$-language?}
+    \end{itemize}
+    {\color{red}\item PROPOSITION - How are NBA and GNBA connected?} \textit{ucilnica}
+    {\color{red}\item THEOREM - What holds for all GNBA?}
+\end{enumerate}
+
+\subsection{Trace language of an LTL formula}
+\textit{Ucilnica lecture 10}
+\begin{enumerate}
+    {\color{red}\item What do we have to consider?}
+    {\color{red}\item What holds for the systems we define?}
+    {\color{red}\item What do we have to suppose?}
+    \item What follows for all LTL formulas?
+    \item On what does $\pi \models \Phi$ depend?
+    \item What do we therefore define?
+    \item How can we also look at the trace?
+    \item What does a formula $\Phi$ determine?
+    \begin{itemize}
+        \item What is it called?
+        \item How do we "notate it"?
+    \end{itemize}
+    \item Formally write out $Trace(\Phi)$.
+    \item How do we connect GNBA and Trace?
+    \item What assumption do we make on $\Phi$?
+    \item How can we express $F \phi$ with these connectives? \textit{zapiski}
+    \item How can we express $G \phi$ with these connectives? \textit{zapiski}
+    \item Define a completed subformula of $\Phi$. (6 cases)
+    \item How is $CS(a U b) $ defined?
+    \item Define an elementary subset. (5 cases)
+    \item EXAMPLE - What are elementary subsets of $CS(a U b)$? (5 cases)
+    \item Draw a diagram
+    \item What do we have for every $\Phi U \Phi'$.
+    \item Define $S \rightarrow^{A} S'$. (5 cases)
+    \item THEOREM - What is a subset of $A_{\Phi}$.
+\end{enumerate}
+
+\subsection{The model checking problem for LTL}
+\textit{Ucilnica lecture 10}
+\begin{enumerate}
+    \item What is the input?
+    \item What is the question?
+    \item STEP 1
+    \begin{itemize}
+        \item What do we construct?
+        \item To what is it converted?
+        \item To what does an accepted run in converted structure correspond?
+    \end{itemize}
+    \item STEP 2
+    \begin{itemize}
+        \item What do we construct?
+        \item What are the accepted runs in this structure?
+    \end{itemize}
+    \item How do we construct a product NBA?
+    \begin{itemize}
+        \item Define $m$
+        \item Define $A$
+        \item Define a set of states
+    \end{itemize}
+    \item How do we get an NBA from GNBA? 
+    \item STEP 3
+    \begin{itemize}
+        \item What do we test?
+        \item How do we test this?
+        \item When do we output YES?
+        \item When do we output NO?
+    \end{itemize}
+    \item EXAMPLE - Illustrate the model checking on $m, s_0 \models \neg (a U b)$
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Hoare logic (logic for verifing programs)}
+\textit{Lecture 11 + ucilnica}
+
+\subsection{Proof rules for partial correctness}
+\begin{enumerate}
+    \item Where is it used?
+    \item Why is hoare logic important?
+    \item In what syles can we write proof?
+    \item Give proof rules in tree style
+    \begin{itemize}
+        \item Partial while
+        \item Composition 
+        \item Assignment
+        \item Skip
+        \item Conditional
+        \item Consequence 
+        \item What is the side condition for the consequence rule?
+    \end{itemize}
+    \item Give tableaux rules
+    \begin{itemize}
+        \item Assignment
+        \item Skip
+        \item Partial while 
+        \item What is the precondition for while?
+        \item Implied
+        \item If statement
+        \item What are the preconditions for if?
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Statement of soundness}
+\begin{enumerate}
+    \item Define $\models_{par} \{ \phi \} C \{ \psi \}$
+    \item Define $\vdash_{par} \{ \phi \} C \{ \psi \}$
+    \item Soundness theorem
+    \item How is the soundness theorem proved?
+    \item LEMMA - Proving preservation property of partial while
+    \item Proof
+    \begin{itemize}
+        \item How do we proof this?
+        \item What has to be satisfied?
+        \item Write proof for $n=0$
+        \item Write proof for $n - 1 \rightarrow n$
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Total correctness}
+\begin{enumerate}
+    \item Proof rule for total while in tree style
+    \begin{itemize}
+        \item What is $z_0$?
+        \item What is $\eta$?
+        \item What is $E$?
+    \end{itemize}
+    \item Proof rule of total while in tableaux style
+    \item Define $\models_{tot} \{ \phi \} C \{ \psi \}$
+    \item Define $\vdash_{tot} \{ \phi \} C \{ \psi \}$
+    \item Soundness theorem
+    \item LEMMA - Proving preservation property of partial while
+    \item Proof
+    \begin{itemize}
+        \item How do we proof this?
+        \item What has to be satisfied?
+        \item Write proof for $n=0$
+        \item Write proof for $n - 1 \rightarrow n$
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Completeness for partial correctness}
+\begin{enumerate}
+    \item Completeness theorem
+    \item How is completeness theorem also called?
+    \item Why is it called so?
+    \item What is Gödels theorem called?
+    \item Define notation $wp(C, \psi)$
+    \item Name 3 lemmas that use $wp$
+    \item LEMMA - expressive completeness
+    \item LEMMA - Weakest precondition
+    \item LEMMA - Sequencing
+\end{enumerate}
+
+\subsection{Proof of completeness}
+\begin{enumerate}
+    \item How is the proof structured?
+    \item What case of the proof did we show?
+    \item What induction hypothesis do we have for this case?
+    \item What did we suppose?
+    \item What do we have to proove?
+    \begin{itemize}
+        \item 1
+        \item 2
+        \item 3
+    \end{itemize}
+    \item What follows if these 
+    \item Prove 1
+    \item Prove 2
+    \item Prove 3
+\end{enumerate}
+
+
+\end{document}
