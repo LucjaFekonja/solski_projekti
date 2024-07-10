@@ -65,14 +65,14 @@
         {\color{red}\item Analogy to what is function type?}
         {\color{red}\item How would you explain function rules?}
         {\color{red}\item Sum type introduction rules}
-        {\color{blue}\item Sum type elimination rules}
-        {\color{red}\item Rule for empty type}
+        {\color{green}\item Sum type elimination rules}
+        {\color{green}\item Rule for empty type}
     \end{itemize}
     \item Name this analogy.
     {\color{red}\item Give computation rules}
     \begin{itemize}
         {\color{blue}\item Product type}
-        {\color{blue}\item Sum type }
+        {\color{green}\item Sum type }
         {\color{red}\item Function type}
     \end{itemize}
     {\color{red}\item EXAMPLE -- Derive a term of type $\sigma \times \tau \rightarrow \tau \times \sigma$.}
@@ -118,10 +118,10 @@
     \end{itemize}
     {\color{red}\item Give proof rules for quantifiers}
     \begin{itemize}
-        {\color{blue}\item $\forall i$}
+        {\color{green}\item $\forall i$}
         {\color{red}\item $\forall e$}
-        {\color{blue}\item $\exists i$}
-        {\color{blue}\item $\exists e$}
+        {\color{green}\item $\exists i$}
+        {\color{green}\item $\exists e$}
     \end{itemize}
     {\color{red}\item What is the standard approach to predicate logic?}
     \begin{itemize}
@@ -159,14 +159,14 @@
 \textit{Lecture 3}
 \begin{enumerate}
     \item How do we call "adding new types"?
-    {\color{blue}\item What are formation rules used for?}
+    {\color{green}\item What are formation rules used for?}
     {\color{red}\item EXAMPLE -- Give examples of formation rules.}
     {\color{blue}\item What do introduction rules give?}
     {\color{red}\item EXAMPLE -- Give introduction rules for natural numbers. }
     {\color{blue}\item What do elimination rules give?}
     {\color{red}\item Give four examples of type constructors / new types.}
     {\color{red}\item Formation rules for list type constructor.}
-    {\color{red}\item How else can we write formation rule?}
+    {\color{green}\item How else can we write formation rule?}
     {\color{red}\item Introduction rules for list type constructor.}
     {\color{red}\item How else can we write introduction rule?}
     \item How do we construct a list?
@@ -175,14 +175,14 @@
     {\color{red}\item Introduction rules for vector type constructor.}
     {\color{red}\item How else can we write introduction rule?}
     {\color{red}\item How is $A \rightarrow B$ defined?}
-    {\color{red}\item Formation rule for product type}
-    {\color{blue}\item Introduction rule for product type}
-    {\color{blue}\item Elimination rule for product type}
-    {\color{blue}\item Computation rule for product type}
+    {\color{green}\item Formation rule for product type}
+    {\color{green}\item Introduction rule for product type}
+    {\color{green}\item Elimination rule for product type}
+    {\color{green}\item Computation rule for product type}
     {\color{red}\item How is $A \times B$ defined?}
     {\color{red}\item Formation rule for dependent sum type}
-    {\color{blue}\item Introduction rule for dependent sum type}
-    {\color{blue}\item Elimination rules for dependent sum type}
+    {\color{green}\item Introduction rule for dependent sum type}
+    {\color{green}\item Elimination rules for dependent sum type}
     {\color{blue}\item Computation rules for sum type}
 \end{enumerate}
 
@@ -198,12 +198,12 @@
         {\color{blue}\item $\pi x: A.B$}
         {\color{red}\item $\sum x: A.B$}
     \end{itemize}
-    {\color{blue}\item What does BHK stand for?}
+    {\color{green}\item What does BHK stand for?}
     {\color{red}\item What did they do?}
     {\color{red}\item Give proofs for the following terms:}
     \begin{itemize}
         {\color{red}\item $\bot$}
-        \item $\Phi \wedge \Psi$
+        {\color{green}\item $\Phi \wedge \Psi$}
         \item $\Phi \vee \Psi$
         {\color{red}\item $\Phi \rightarrow \Psi$}
         {\color{blue}\item $\forall x : A. \Phi$}
@@ -223,21 +223,21 @@
     {\color{red}\item Who developed this approach?}
     {\color{red}\item When?}
     {\color{red}\item What approach does Lean take?}
-    {\color{blue}\item Describe this approach.}
+    {\color{green}\item Describe this approach.}
     {\color{red}\item Define subuniverse}
-    {\color{blue}\item What is a subterminal property?}
+    {\color{green}\item What is a subterminal property?}
     {\color{blue}\item What do we also need here?}
     {\color{red}\item How do we change the formation rule for product type?}
-    {\color{red}\item What is Scott-Prawitz interpretation of logic?}
+    {\color{green}\item What is Scott-Prawitz interpretation of logic?}
     \item How did they define the following terms?
     \begin{itemize}
         {\color{blue}\item $\bot$}
-        {\color{red}\item Which equality do we have using this definition?}
+        {\color{green}\item Which equality do we have using this definition?}
         {\color{blue}\item $\Phi \wedge \Psi$}
         {\color{red}\item $\Phi \vee \Psi$}
         \item $\Phi \rightarrow \Psi$
         {\color{red}\item $\forall x : A. \Phi$}
-        {\color{blue}\item $\exists x: A. \Phi$}
+        {\color{green}\item $\exists x: A. \Phi$}
     \end{itemize}
     \item Explain $\Phi \wedge \Psi$ of Scott-Prawitz interpretation
     \begin{itemize}
@@ -250,7 +250,7 @@
 \textit{Lecture 4}
 \textbf{Nat}
 \begin{enumerate}
-    {\color{blue}\item Write out induction on natural numbers}
+    {\color{green}\item Write out induction on natural numbers}
     {\color{red}\item Define the eliminator for natural numbers}
     {\color{red}\item What do we need do define for the eliminator? (name it)}
     \item Give computation rules for natural numbers
@@ -259,8 +259,13 @@
         {\color{blue}\item How do we use the recursor on succ n?   } 
     \end{itemize}
     {\color{blue}\item EXAMPLE -- Proposition (fun), result, function}
-    {\color{blue}\item How do we define a sum of two natural numbers?}
-    {\color{blue}\item Give an improved version of n+m}
+    \begin{itemize}
+        {\color{green}\item P}
+        {\color{green}\item b}
+        {\color{green}\item f}
+    \end{itemize}
+    {\color{green}\item How do we define a sum of two natural numbers?}
+    {\color{green}\item Give an improved version of n+m}
     \item EXERCISE -- Derive $succ 0 + succ 0$
 \end{enumerate}
 
@@ -275,24 +280,24 @@
 \textbf{Vectors}
 \begin{enumerate}
     {\color{red}\item Give constructors for vectors (2)}
-    {\color{blue}\item Give eliminator for vectors}
+    {\color{green}\item Give eliminator for vectors}
     {\color{red}\item Give computation rules for vectors (2)}
 \end{enumerate}
 
 \textbf{Propositional equality}
 \begin{enumerate}
-    {\color{blue}\item Give formation rule}
+    {\color{green}\item Give formation rule}
     {\color{blue}\item Define constructur $rfl$}
-    {\color{blue}\item Define eliminator}
-    {\color{blue}\item Give computation rule}
+    {\color{green}\item Define eliminator}
+    {\color{green}\item Give computation rule}
     {\color{red}\item What is the intuition for propositional equality?}
 \end{enumerate}
 
 \textbf{Judgemental equality}
 \begin{enumerate}
     {\color{red}\item What do we define?}
-    {\color{blue}\item Give formulation rule for judgemental equality.}
-    {\color{blue}\item Give substitution rule for judgemental equality.}
+    {\color{green}\item Give formulation rule for judgemental equality.}
+    {\color{green}\item Give substitution rule for judgemental equality.}
 \end{enumerate}
 
 
@@ -302,17 +307,17 @@
     {\color{red}\item Determine grammar of propositional logic.}
     {\color{red}\item What is a formula?}
     {\color{red}\item What are it's arguments?}
-    {\color{red}\item What can we determine with a formula?}
+    {\color{green}\item What can we determine with a formula?}
     {\color{red}\item EXAMPLE - Formula in propositional Logic.}
     {\color{red}\item Define a valid tantology.}
     {\color{red}\item Define a satisfiable formula.}
-    {\color{red}\item What is such $b$ called?}
+    {\color{green}\item What is such $b$ called?}
     {\color{red}\item Define equivalence.}
     {\color{red}\item How can we establish that a formula is a tantology? (2)}
     \item In what time do they work?
     \item What theorems do we have for natural deduction?
-    {\color{red}\item Give soundness theorem.}
-    {\color{red}\item Give completeness thorem.}
+    {\color{green}\item Give soundness theorem.}
+    {\color{green}\item Give completeness thorem.}
     {\color{red}\item What is the size of the truth table.}
     \item When is a formula a tantology based on the truth table?
     \item What can we also determine with a truth table?
@@ -437,7 +442,7 @@
         {\color{red}\item What inthe past three examples is new vocabulary?}
     \end{itemize}
     \item How do we specify vocabulary?
-    {\color{blue}\item Define signature}
+    {\color{green}\item Define signature}
     {\color{red}\item What does every predicate have?}
     \item What does each function have?
     {\color{red}\item What are $(P, F)$ in CS example?}
@@ -446,10 +451,10 @@
     {\color{blue}\item What do terms express?}
     {\color{blue}\item What do formulas express?}
     {\color{red}\item What is always a term?}
-    {\color{red}\item How can we construct terms?}
+    {\color{green}\item How can we construct terms?}
     \item EX - What are terms in CS example?
     \item EX - What are terms in axiom example?
-    {\color{red}\item What are always formulas?}
+    {\color{green}\item What are always formulas?}
     {\color{red}\item How can we construct formulas from terms?}
     {\color{red}\item How can we construct formulas from formulas?}
     {\color{blue}\item How else can we construct formulas?}
@@ -472,10 +477,10 @@
 
 \subsection{Structures, the satisfaction relation, satisfiability, validity, the statement of Gödel's completeness theorem}
 \begin{enumerate}
-    {\color{red}\item Formally define structure}
+    {\color{green}\item Formally define structure}
     \begin{itemize}
         \item M
-        {\color{blue}\item p}
+        {\color{green}\item p}
         \item f
     \end{itemize}
     {\color{red}\item Give natural interpretation of $(\leq, +, \cdot, 0, 1)$}
@@ -491,19 +496,19 @@
     {\color{red}\item How do we read it?}
     \item When are the following interpretations true?
     \begin{itemize}
-        \item $m \models_{\sigma} P (t_1, \dots t_n)$
+        {\color{green}\item $m \models_{\sigma} P (t_1, \dots t_n)$}
         \item $m \models_{\sigma} t_1 = t_2$
         {\color{red}\item $m \models_{\sigma} \Phi \rightarrow \Psi$}
         \item $m \models_{\sigma} \Phi \wedge \Psi$
         \item $m \models_{\sigma} \Phi \vee \Psi$
         \item $m \models_{\sigma} \neg \Phi$
-        {\color{blue}\item $m \models_{\sigma} \forall x. \Phi$}
-        {\color{blue}\item $m \models_{\sigma} \exists x. \Phi$}
+        {\color{green}\item $m \models_{\sigma} \forall x. \Phi$}
+        {\color{green}\item $m \models_{\sigma} \exists x. \Phi$}
     \end{itemize}
     \item What here are atomic formulas?
     \item When is a truth value of $m \models_{\Sigma} \Phi$ independent of $\Sigma$?
     \item How do we write this?
-    {\color{red}\item Define a valid sentance}
+    {\color{green}\item Define a valid sentance}
     \item Define a satisfiable sentance
     {\color{red}\item Give examples of valid formulas (2)}
     {\color{red}\item Give examples of satisfiable formulas}
@@ -513,7 +518,7 @@
     {\color{red}\item THEOREM  - Gödels completeness theorem}
     {\color{red}\item Give the problem where Gödels theorem is used}
     \begin{itemize}
-        {\color{blue}\item What is the input?}
+        {\color{green}\item What is the input?}
         {\color{red}\item What is the output?}
         {\color{red}\item What is this algorithm called?}
         {\color{red}\item Is it efficient?}
@@ -545,9 +550,9 @@
 \textit{Lecture 8}
 \begin{enumerate}
     {\color{red}\item Create 6 axioms with predicates sever, client, connected}
-    {\color{red}\item Define a model}
+    {\color{green}\item Define a model}
     {\color{blue}\item What is a model checking question?}
-    {\color{blue}\item What algorithm do we need?}
+    {\color{green}\item What algorithm do we need?}
     \item What do we compute/return in the following cases?
     \begin{itemize}
         {\color{red}\item $m \models_{\sigma} P (t_1, \dots t_n)$}
@@ -562,13 +567,13 @@
     \item Can we make it polynomial?
     {\color{red}\item How?}
     {\color{red}\item Depentent on what?}
-    {\color{blue}\item What axioms can we add (in the example from question 1)?}
+    {\color{green}\item What axioms can we add (in the example from question 1)?}
     \item What are we now interested in?
     {\color{red}\item Can you ask this question in a different way? More formally}
-    {\color{blue}\item Algorithm for what do we need?}
+    {\color{green}\item Algorithm for what do we need?}
     \begin{itemize}
-        {\color{blue}\item Input?}
-        {\color{blue}\item Output?}
+        {\color{green}\item Input?}
+        {\color{green}\item Output?}
     \end{itemize}
     {\color{blue}\item Is the problem decidable?}
     {\color{blue}\item What algorithm does exist?}
@@ -590,23 +595,23 @@
     \begin{itemize}
         {\color{blue}\item What is the input?}
         {\color{red}\item What do we add?}
-        {\color{blue}\item What do we build?}
-        {\color{blue}\item Using what?}
-        {\color{blue}\item What is the idea?}
+        {\color{green}\item What do we build?}
+        {\color{green}\item Using what?}
+        {\color{green}\item What is the idea?}
     \end{itemize}
     {\color{red}\item After we have a sentance in predicate logic, what do we define?}
     \item Where does this mapping map...
     \begin{itemize}
-        {\color{blue}\item Predicate}
+        {\color{green}\item Predicate}
         {\color{red}\item Negation}
         \item Conjinction
         {\color{blue}\item Existance}
     \end{itemize}
     {\color{red}\item FACT - When is $\Phi$ satisfied with a structure?}
-    {\color{blue}\item How do we get rid of function symbols in the propositional formula?}
+    {\color{green}\item How do we get rid of function symbols in the propositional formula?}
     \begin{itemize}
-        {\color{blue}\item With what do we replacee functions?}
-        {\color{blue}\item What axioms do we add? (2)}
+        {\color{green}\item With what do we replacee functions?}
+        {\color{green}\item What axioms do we add? (2)}
     \end{itemize}
     {\color{red}\item How do we treat equality =?}
     \begin{itemize}
@@ -635,8 +640,10 @@
     \begin{itemize}
         {\color{red}\item 1 - name it}
         \item 1 - what is the definition of the property?
+        {\color{blue}\item 1 - How can we formally express it?}
         \item 1 - does our example system have it? 
         {\color{red}\item 2 - what is the definition of the property?}
+        {\color{green}\item 2 - How can we formally express it?}
         {\color{red}\item 2 - does our example system have it?}
         {\color{red}\item 2 - give an counterexample.}
         {\color{red}\item 3 - name it.}
@@ -649,14 +656,14 @@
         {\color{red}\item S}
         {\color{red}\item $\rightarrow$}
         {\color{red}\item property}
-        {\color{red}\item L}
+        {\color{green}\item L}
         {\color{red}\item anything else?}
     \end{itemize}
     {\color{red}\item How can we model a deadlock?}
     {\color{red}\item What syntax for formulas did we define for temporal logic? (8)}
         %   X Goes Forward Until We Rut
     {\color{red}\item Define every symbol.}
-    {\color{red}\item Define a run.}
+    {\color{blue}\item Define a run.}
     \item How do we also call a run?
     \item What notation can we create from a standard notation of a run?
     {\color{red}\item What relation did we define in temporal logic?}
@@ -685,16 +692,16 @@
 \begin{enumerate}
     {\color{red}\item What is a LTL model checking?}
     \begin{itemize}
-        {\color{red}\item Input?}
+        {\color{blue}\item Input?}
         {\color{red}\item Output?}
     \end{itemize}
     {\color{red}\item EXAMPLE - What does the algorithm return if we input $G ((t_1 \rightarrow Fc_1) \wedge (t_2 \rightarrow Fc_2))$?}
     {\color{red}\item EXAMPLE - Slightly redraw the diagram you drew earlier}
     \begin{itemize}
         {\color{red}\item What does the algorithm return?}
-        {\color{red}\item When would the original model return true?}
-        {\color{red}\item Define this constraint}
-        {\color{red}\item With what can we model check?}
+        {\color{blue}\item When would the original model return true?}
+        {\color{green}\item Define this constraint}
+        {\color{green}\item With what can we model check?}
         {\color{red}\item What does the algorithm return?}
     \end{itemize}
 \end{enumerate}
@@ -710,7 +717,7 @@
         {\color{red}\item Define a $\omega$-word.}
         {\color{red}\item Give some more examples of words that are / are not accepted.}
         {\color{red}\item Define $\omega$-language of the automations.}
-        {\color{red}\item Formally write $\omega$-language.}
+        {\color{blue}\item Formally write $\omega$-language.}
     \end{itemize}
     \item EXAMPLE - Give another example of a NBA.
     \begin{itemize}
@@ -723,7 +730,7 @@
         {\color{red}\item What is $\omega$-language in this example?}
     \end{itemize}
     {\color{red}\item Define an NBA over an alphabet}
-    {\color{red}\item When is a $\omega$-word accepted in an NBA over an alphabet?}
+    {\color{blue}\item When is a $\omega$-word accepted in an NBA over an alphabet?}
     {\color{red}\item PROPOSITION - When is a $\omega$-language of NBA non empty?}
     {\color{red}\item What are we testing here?}
     {\color{red}\item Define $\omega$-regular }
@@ -736,8 +743,8 @@
         \item What is the alphabet?
         {\color{red}\item What is the $\omega$-language?}
     \end{itemize}
-    {\color{red}\item PROPOSITION - How are NBA and GNBA connected?} \textit{ucilnica}
-    {\color{red}\item THEOREM - What holds for all GNBA?}
+    {\color{blue}\item PROPOSITION - How are NBA and GNBA connected?} \textit{ucilnica}
+    {\color{blue}\item THEOREM - What holds for all GNBA?}
 \end{enumerate}
 
 \subsection{Trace language of an LTL formula}
@@ -745,60 +752,60 @@
 \begin{enumerate}
     {\color{red}\item What do we have to consider?}
     {\color{red}\item What holds for the systems we define?}
-    {\color{red}\item What do we have to suppose?}
-    \item What follows for all LTL formulas?
+    {\color{green}\item What do we have to suppose?}
+    {\color{green}\item What follows for all LTL formulas?}
     \item On what does $\pi \models \Phi$ depend?
-    \item What do we therefore define?
-    \item How can we also look at the trace?
+    {\color{green}\item What do we therefore define?}
+    {\color{green}\item How can we also look at the trace?}
     \item What does a formula $\Phi$ determine?
     \begin{itemize}
         \item What is it called?
         \item How do we "notate it"?
     \end{itemize}
-    \item Formally write out $Trace(\Phi)$.
+    {\color{green}\item Formally write out $Trace(\Phi)$.}
     \item How do we connect GNBA and Trace?
     \item What assumption do we make on $\Phi$?
-    \item How can we express $F \phi$ with these connectives? \textit{zapiski}
-    \item How can we express $G \phi$ with these connectives? \textit{zapiski}
-    \item Define a completed subformula of $\Phi$. (6 cases)
+    {\color{blue}\item How can we express $F \phi$ with these connectives?} \textit{zapiski}
+    {\color{blue}\item How can we express $G \phi$ with these connectives?} \textit{zapiski}
+    {\color{green}\item Define a completed subformula of $\Phi$. (6 cases)}
     \item How is $CS(a U b) $ defined?
-    \item Define an elementary subset. (5 cases)
+    {\color{green}\item Define an elementary subset. (5 cases)}
     \item EXAMPLE - What are elementary subsets of $CS(a U b)$? (5 cases)
-    \item Draw a diagram
-    \item What do we have for every $\Phi U \Phi'$.
-    \item Define $S \rightarrow^{A} S'$. (5 cases)
-    \item THEOREM - What is a subset of $A_{\Phi}$.
+    {\color{blue}\item Draw a diagram}
+    {\color{green}\item What do we have for every $\Phi U \Phi'$.}
+    {\color{green}\item Define $S \rightarrow^{A} S'$. (5 cases)}
+    {\color{blue}\item THEOREM - What is a subset of $A_{\Phi}$.}
 \end{enumerate}
 
 \subsection{The model checking problem for LTL}
 \textit{Ucilnica lecture 10}
 \begin{enumerate}
     \item What is the input?
-    \item What is the question?
+    {\color{blue}\item What is the question?}
     \item STEP 1
     \begin{itemize}
-        \item What do we construct?
-        \item To what is it converted?
-        \item To what does an accepted run in converted structure correspond?
+        {\color{blue}\item What do we construct?}
+        {\color{blue}\item To what is it converted?}
+        {\color{green}\item To what does an accepted run in converted structure correspond?}
     \end{itemize}
     \item STEP 2
     \begin{itemize}
-        \item What do we construct?
-        \item What are the accepted runs in this structure?
+        {\color{blue}\item What do we construct?}
+        {\color{green}\item What are the accepted runs in this structure?}
     \end{itemize}
     \item How do we construct a product NBA?
     \begin{itemize}
-        \item Define $m$
-        \item Define $A$
-        \item Define a set of states
+        {\color{blue}\item Define $m$}
+        {\color{blue}\item Define $A$}
+        {\color{green}\item Define a set of states}
     \end{itemize}
-    \item How do we get an NBA from GNBA? 
+    {\color{green}\item How do we get an NBA from GNBA? }
     \item STEP 3
     \begin{itemize}
-        \item What do we test?
-        \item How do we test this?
-        \item When do we output YES?
-        \item When do we output NO?
+        {\color{blue}\item What do we test?}
+        {\color{blue}\item How do we test this?}
+        {\color{blue}\item When do we output YES?}
+        {\color{blue}\item When do we output NO?}
     \end{itemize}
     \item EXAMPLE - Illustrate the model checking on $m, s_0 \models \neg (a U b)$
 \end{enumerate}
@@ -815,12 +822,12 @@
     \item In what syles can we write proof?
     \item Give proof rules in tree style
     \begin{itemize}
-        \item Partial while
-        \item Composition 
+        {\color{red}\item Partial while}
+        {\color{red}\item Composition } 
         \item Assignment
         \item Skip
-        \item Conditional
-        \item Consequence 
+        {\color{blue}\item Conditional}
+        {\color{blue}\item Consequence} 
         \item What is the side condition for the consequence rule?
     \end{itemize}
     \item Give tableaux rules
@@ -829,7 +836,7 @@
         \item Skip
         \item Partial while 
         \item What is the precondition for while?
-        \item Implied
+        {\color{red}\item Implied}
         \item If statement
         \item What are the preconditions for if?
     \end{itemize}
@@ -837,15 +844,15 @@
 
 \subsection{Statement of soundness}
 \begin{enumerate}
-    \item Define $\models_{par} \{ \phi \} C \{ \psi \}$
+    {\color{blue}\item Define $\models_{par} \{ \phi \} C \{ \psi \}$}
     \item Define $\vdash_{par} \{ \phi \} C \{ \psi \}$
-    \item Soundness theorem
+    {\color{red}\item Soundness theorem}
     \item How is the soundness theorem proved?
     \item LEMMA - Proving preservation property of partial while
     \item Proof
     \begin{itemize}
         \item How do we proof this?
-        \item What has to be satisfied?
+        {\color{blue}\item What has to be satisfied?}
         \item Write proof for $n=0$
         \item Write proof for $n - 1 \rightarrow n$
     \end{itemize}
@@ -853,55 +860,55 @@
 
 \subsection{Total correctness}
 \begin{enumerate}
-    \item Proof rule for total while in tree style
+    {\color{red}\item Proof rule for total while in tree style}
     \begin{itemize}
         \item What is $z_0$?
-        \item What is $\eta$?
-        \item What is $E$?
+        {\color{red}\item What is $\eta$?}
+        {\color{red}\item What is $E$?}
     \end{itemize}
     \item Proof rule of total while in tableaux style
     \item Define $\models_{tot} \{ \phi \} C \{ \psi \}$
     \item Define $\vdash_{tot} \{ \phi \} C \{ \psi \}$
-    \item Soundness theorem
+    {\color{red}\item Soundness theorem}
     \item LEMMA - Proving preservation property of partial while
     \item Proof
     \begin{itemize}
         \item How do we proof this?
-        \item What has to be satisfied?
+        {\color{red}\item What has to be satisfied?}
         \item Write proof for $n=0$
-        \item Write proof for $n - 1 \rightarrow n$
+        {\color{blue}\item Write proof for $n - 1 \rightarrow n$}
     \end{itemize}
 \end{enumerate}
 
 \subsection{Completeness for partial correctness}
 \begin{enumerate}
-    \item Completeness theorem
+    {\color{red}\item Completeness theorem}
     \item How is completeness theorem also called?
-    \item Why is it called so?
-    \item What is Gödels theorem called?
-    \item Define notation $wp(C, \psi)$
-    \item Name 3 lemmas that use $wp$
-    \item LEMMA - expressive completeness
-    \item LEMMA - Weakest precondition
-    \item LEMMA - Sequencing
+    {\color{blue}\item Why is it called so?}
+    {\color{red}\item What is Gödels theorem called?}
+    {\color{blue}\item Define notation $wp(C, \psi)$}
+    {\color{red}\item Name 3 lemmas that use $wp$}
+    {\color{blue}\item LEMMA - expressive completeness}
+    {\color{green}\item LEMMA - Weakest precondition}
+    {\color{blue}\item LEMMA - Sequencing}
 \end{enumerate}
 
 \subsection{Proof of completeness}
 \begin{enumerate}
-    \item How is the proof structured?
+    {\color{blue}\item How is the proof structured?}
     \item What case of the proof did we show?
-    \item What induction hypothesis do we have for this case?
-    \item What did we suppose?
+    {\color{red}\item What induction hypothesis do we have for this case?}
+    {\color{red}\item What did we suppose?}
     \item What do we have to proove?
     \begin{itemize}
-        \item 1
-        \item 2
-        \item 3
+        {\color{blue}\item 1}
+        {\color{blue}\item 2}
+        {\color{blue}\item 3}
     \end{itemize}
-    \item What follows if these 
-    \item Prove 1
-    \item Prove 2
-    \item Prove 3
+    {\color{blue}\item What follows if these hold true}
+    {\color{blue}\item Prove 1}
+    {\color{red}\item Prove 2}
+    {\color{blue}\item Prove 3}
 \end{enumerate}
 
 
